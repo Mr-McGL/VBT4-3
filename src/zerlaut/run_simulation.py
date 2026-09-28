@@ -186,12 +186,10 @@ def save_result(
 def main() -> None:
     args = parse_args()
     config = load_config(args.config)
-    base_path = args.output if args.output is not None else Path(config["output"]["path"])
-    run = config["simulation"]["run"]
-    output_path = base_path.with_name(f"{base_path.stem}_run_{run}{base_path.suffix}")
+    output_path = args.output if args.output is not None else Path(config["output"]["path"])
     result = run_simulation(config)
     save_result(result, config, output_path)
-    print(f"Run {run} guardada en {output_path}")
+    print(f"Resultado guardado en {output_path}")
     print(
         f"Pasos: {result['time_ms'].size}; "
         f"E máx: {np.max(result['E_hz']):.3f} Hz; "

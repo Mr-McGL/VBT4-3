@@ -1,6 +1,5 @@
 {
   "simulation": {
-    "run": 0,
     "duration_ms": 4000.0,
     "dt_ms": 0.5,
     "method": "heun",

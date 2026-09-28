@@ -64,7 +64,7 @@ tvb_test/
 
 ## Estado funcional del proyecto
 
-La implementación propia contiene dos ejemplos ejecutables de TVB para una única región con el modelo `ZerlautAdaptationFirstOrder`: uno configurable mediante `config/simulation.json` y otro autocontenido con entradas hardcodeadas. Cada run genera un experimento completo en su propio NPZ, con nombres como `results/simulation_run_0.npz` y `results/simple_simulation_run_0.npz`. El cuaderno de visualización puede superponer una o varias runs.
+La implementación propia contiene dos ejemplos ejecutables de TVB para una única región con el modelo `ZerlautAdaptationFirstOrder`: uno configurable mediante `config/simulation.json` y otro autocontenido con entradas hardcodeadas. Producen `results/simulation.npz` y `results/simple_simulation.npz`. El cuaderno de visualización puede superponer uno o varios ficheros de resultados.
 
 Cuando se añada una implementación propia, deberá situarse fuera de `0.sample_code` y quedar descrita aquí, indicando como mínimo:
 

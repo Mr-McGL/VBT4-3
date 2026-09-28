@@ -13,7 +13,6 @@ from tvb.simulator.models.zerlaut import ZerlautAdaptationFirstOrder
 # 1.0) Salida de la simulación.
 OUTPUT_PATH = Path("results/simple_simulation.npz")
 OUTPUT_DTYPE = "float32"
-RUN = 0
 
 
 ## 1.1) Parámetros de la simulación.
@@ -152,7 +151,6 @@ def save_result(
     }
     config = {
         "simulation": {
-            "run": RUN,
             "duration_ms": DURATION_MS,
             "dt_ms": DT_MS,
             "method": "heun",
@@ -183,20 +181,17 @@ def save_result(
             "dtype": OUTPUT_DTYPE,
         },
     }
-    output_path = OUTPUT_PATH.with_name(
-        f"{OUTPUT_PATH.stem}_run_{RUN}{OUTPUT_PATH.suffix}"
-    )
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     metadata = {"config": config}
     arrays = {
         name: np.asarray(values, dtype=OUTPUT_DTYPE) for name, values in result.items()
     }
     np.savez(
-        output_path,
+        OUTPUT_PATH,
         **arrays,
         metadata_json=np.array(json.dumps(metadata)),
     )
-    return output_path
+    return OUTPUT_PATH
 
 
 def main() -> None:
@@ -205,7 +200,7 @@ def main() -> None:
 
     # TVB calcula E e I en kHz; save_result las convierte a Hz al guardarlas.
     output_path = save_result(time_ms, stimulus_hz, fe_ext_hz, fi_ext_hz, history)
-    print(f"Run {RUN} guardada en {output_path}")
+    print(f"Resultado guardado en {output_path}")
     print(f"No se ha leído ningún fichero de conectividad ni de datos.")
 
 
