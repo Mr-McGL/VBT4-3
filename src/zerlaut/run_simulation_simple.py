@@ -7,18 +7,25 @@ import numpy as np
 from tvb.simulator.models.zerlaut import ZerlautAdaptationFirstOrder
 
 
-# 1) Entradas de la simulación. No se lee ningún JSON ni fichero de datos.
-DURATION_MS = 2000.0
-DT_MS = 0.5
-BASELINE_HZ = 5.0
-PULSE_AMPLITUDE_HZ = 40.0
-PULSE_ONSET_MS = 500.0
-PULSE_DURATION_MS = 700.0
-INPUT_SCALE = 1.0
-FI_RATIO = 0.5
+# 1) Entradas de la simulación.
+
+# 1.0) Salida de la simulación.
 OUTPUT_PATH = Path("results/simple_simulation.npz")
 
-# Parámetros inspirados en el modelo Zerlaut-AdEx del proyecto de referencia.
+
+## 1.1) Parámetros de la simulación.
+DURATION_MS = 2000.0    # Duración de la simulación en milisegundos.
+DT_MS = 0.5             # Paso de integración en milisegundos.
+
+## 1.2) Parámetros de la entrada. En este caso un pulso.
+BASELINE_HZ = 5.0           # Frecuencia de disparo basal en Hz. Que hace esto? --
+PULSE_AMPLITUDE_HZ = 40.0   # Amplitud del pulso en Hz.
+PULSE_ONSET_MS = 500.0      # Instante de inicio del pulso en ms.
+PULSE_DURATION_MS = 700.0   # Duración del pulso en ms.
+INPUT_SCALE = 1.0           # Escala de la entrada externa. Que hace esto? --
+FI_RATIO = 0.5              # Relación entre la entrada externa inhibitoria y la excitatoria
+
+# 1.3) Parámetros del modelo Zerlaut-AdEx.
 MODEL_PARAMETERS = {
     "g_L": 10.0,
     "C_m": 200.0,
@@ -44,16 +51,18 @@ MODEL_PARAMETERS = {
     "K_ext_i": 35,
     "T": 10.0,
 }
+
+# Todos los parámetros son de tipo float menos lo que están en esta lista. 
 INTEGER_PARAMETERS = {"N_tot", "K_ext_e", "K_ext_i"}
 
-
-def build_inputs() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def build_pulse_input() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Create time, a pulse, and the E/I external firing rates in Hz."""
+    
     time_ms = np.arange(0.0, DURATION_MS, DT_MS)
     stimulus_hz = np.full(time_ms.shape, BASELINE_HZ)
+
     pulse = (time_ms >= PULSE_ONSET_MS) & (
-        time_ms < PULSE_ONSET_MS + PULSE_DURATION_MS
-    )
+        time_ms < PULSE_ONSET_MS + PULSE_DURATION_MS)
     stimulus_hz[pulse] += PULSE_AMPLITUDE_HZ
 
     # Misma convención que el código de referencia.
@@ -65,6 +74,7 @@ def build_inputs() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
 def build_model() -> ZerlautAdaptationFirstOrder:
     """Create and configure TVB's first-order Zerlaut model."""
     model = ZerlautAdaptationFirstOrder()
+    
     for name, value in MODEL_PARAMETERS.items():
         dtype = np.int64 if name in INTEGER_PARAMETERS else np.float64
         setattr(model, name, np.array([value], dtype=dtype))
@@ -75,7 +85,7 @@ def build_model() -> ZerlautAdaptationFirstOrder:
     return model
 
 
-def set_external_drive(
+def set_external_input(
     model: ZerlautAdaptationFirstOrder, fe_hz: float, fi_hz: float
 ) -> None:
     """Put one time sample into TVB; TVB represents firing rates in kHz."""
@@ -83,9 +93,9 @@ def set_external_drive(
     fi_khz = np.array([fi_hz / 1000.0])
 
     # Entradas E/I para las poblaciones excitatoria e inhibitoria.
-    model.external_input_ex_ex = fe_khz
+    model.external_input_ex_ex = fe_khz.copy()
     model.external_input_in_ex = fe_khz.copy()
-    model.external_input_ex_in = fi_khz
+    model.external_input_ex_in = fi_khz.copy()
     model.external_input_in_in = fi_khz.copy()
 
 
@@ -103,11 +113,11 @@ def integrate(
     coupling = np.zeros((1, 1, 1), dtype=np.float64)
 
     for index in range(fe_ext_hz.size - 1):
-        set_external_drive(model, fe_ext_hz[index], fi_ext_hz[index])
+        set_external_input(model, fe_ext_hz[index], fi_ext_hz[index])
         slope_1 = model.dfun(state, coupling)
 
         predicted_state = state + DT_MS * slope_1
-        set_external_drive(model, fe_ext_hz[index + 1], fi_ext_hz[index + 1])
+        set_external_input(model, fe_ext_hz[index + 1], fi_ext_hz[index + 1])
         slope_2 = model.dfun(predicted_state, coupling)
 
         state = state + 0.5 * DT_MS * (slope_1 + slope_2)
@@ -122,7 +132,7 @@ def integrate(
 
 
 def main() -> None:
-    time_ms, stimulus_hz, fe_ext_hz, fi_ext_hz = build_inputs()
+    time_ms, stimulus_hz, fe_ext_hz, fi_ext_hz = build_pulse_input()
     history = integrate(build_model(), fe_ext_hz, fi_ext_hz)
 
     # TVB calcula E e I en kHz. Se multiplican por 1000 antes de guardarlas.
