@@ -5,16 +5,16 @@ Estas reglas son obligatorias para cualquier agente que trabaje en este reposito
 ## Orden de lectura antes de actuar
 
 1. Leer `STRUCTURE.MD` antes de crear, modificar, mover o eliminar cualquier fichero o carpeta.
-2. Si la tarea guarda relación con el código de referencia, leer `VBT_4-3.MD` antes de consultar `vbt_t4-3`.
-3. Usar `VBT_4-3.MD` para localizar el fichero concreto que contiene la información buscada. No recorrer ni buscar directamente por toda la carpeta `vbt_t4-3` como primer método de investigación.
+2. Si la tarea guarda relación con el código de referencia, leer `VBT_4-3.MD` antes de consultar `0.sample_code/sinovia`.
+3. Usar `VBT_4-3.MD` para localizar el fichero concreto que contiene la información buscada. No recorrer ni buscar directamente por toda la carpeta `0.sample_code/sinovia` como primer método de investigación.
 4. Una vez localizado el fichero mediante la guía, puede leerse el fragmento necesario como fuente de inspiración o para confirmar un detalle.
 
-## Código de referencia: `vbt_t4-3`
+## Código de referencia: `0.sample_code/sinovia`
 
-- `vbt_t4-3` contiene código de referencia, no la implementación editable de este proyecto.
+- `0.sample_code/sinovia` contiene código de referencia, no la implementación editable de este proyecto.
 - Puede leerse para comprender decisiones o tomar inspiración.
-- Nunca debe modificarse ningún fichero, directorio ni metadato dentro de `vbt_t4-3`, incluido su `.git` interno.
-- No deben generarse datasets, resultados, logs, cachés ni entornos virtuales dentro de `vbt_t4-3`.
+- Nunca debe modificarse ningún fichero, directorio ni metadato dentro de `0.sample_code/sinovia`, incluido cualquier `.git` interno.
+- No deben generarse datasets, resultados, logs, cachés ni entornos virtuales dentro de `0.sample_code/sinovia`.
 - Todo código nuevo debe crearse fuera de esa carpeta.
 - Si la guía `VBT_4-3.MD` resulta incompleta o desactualizada, actualizar la guía fuera del directorio de referencia; no alterar el código de referencia.
 
@@ -36,8 +36,8 @@ Estas reglas son obligatorias para cualquier agente que trabaje en este reposito
 
 Antes de cerrar una tarea, verificar que:
 
-- `vbt_t4-3` no ha sufrido cambios;
+- `0.sample_code/sinovia` no ha sufrido cambios;
 - `.prompts` no ha sido accedida ni modificada;
-- los cambios nuevos están fuera de `vbt_t4-3`;
+- los cambios nuevos están fuera de `0.sample_code/sinovia`;
 - `STRUCTURE.MD` sigue describiendo fielmente el proyecto;
 - `VBT_4-3.MD` sigue siendo un índice válido si cambió documentación relacionada con el código de referencia.

@@ -1,12 +1,10 @@
-# Guía del código de referencia `vbt_t4-3`
+# Guía del código de referencia `0.sample_code/sinovia`
 
 ## Propósito de esta guía
 
-Este documento es el índice de consulta del directorio `vbt_t4-3`. Su objetivo es permitir localizar rápidamente conceptos, responsabilidades, entradas y salidas sin tener que recorrer el código de referencia a ciegas.
+Este documento es el índice de consulta del directorio `0.sample_code/sinovia`. Su objetivo es permitir localizar rápidamente conceptos, responsabilidades, entradas y salidas sin tener que recorrer el código de referencia a ciegas.
 
-> Nota sobre el nombre: la carpeta existente en el proyecto se llama `vbt_t4-3` (con `t`), aunque en algunos requisitos se la denomine `vbt_4-3`.
-
-`vbt_t4-3` es un repositorio de referencia autocontenido. Implementa y documenta un experimento de calibración inversa de un modelo de campo medio Zerlaut-AdEx: a partir de actividad excitatoria/inhibitoria y del estímulo, un Transformer estima 11 parámetros; después se valida si esos parámetros reconstruyen la dinámica al volver a ejecutar el simulador directo.
+`0.sample_code/sinovia` es un repositorio de referencia autocontenido. Implementa y documenta un experimento de calibración inversa de un modelo de campo medio Zerlaut-AdEx: a partir de actividad excitatoria/inhibitoria y del estímulo, un Transformer estima 11 parámetros; después se valida si esos parámetros reconstruyen la dinámica al volver a ejecutar el simulador directo.
 
 La configuración final usa 1000 simulaciones (700 entrenamiento, 150 validación y 150 prueba), cuatro representaciones de la señal y una selección final basada en la calidad de reconstrucción directa.
 
@@ -226,4 +224,3 @@ Los directorios `data/`, `results_zerlaut_inverse/` y `logs/` no están incluido
 - `run_final_11dWi_train_eval.py` llama al entrenador y al evaluador cuatro veces.
 - `run_final_11dWi_select_refine.py` consume sus CSV y reutiliza la re-simulación del evaluador.
 - `run_full_final_11dWi_workflow.sh` coordina todas las etapas y verifica el resultado.
-

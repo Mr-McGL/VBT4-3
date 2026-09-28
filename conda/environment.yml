@@ -1,16 +1,35 @@
-name: tvb-single-region
+name: tvb
 channels:
   - conda-forge
 dependencies:
-  - python=3.11
+  - python=3.13
   - numpy=1.26
   - scipy=1.14
   - matplotlib=3.9
   - jupyterlab=4
   - ipykernel=6
   - pip
-  # Micromamba instala automáticamente esta sección de PyPI al crear el entorno.
-  # Instalación manual equivalente:
-  # micromamba run -n tvb-single-region python -m pip install tvb-library==2.10.0
-  - pip:
-      - tvb-library==2.10.0
+  #- pip:
+  #    - tvb-library==2.10.0
+
+
+##############################################
+## Instalación
+# mamba env create -f conda/environment.yml
+
+
+###############################################
+## Crear un entrono Jupyter
+# mamba run -n tvb python -m ipykernel install --user \
+#     --name tvb \
+#     --display-name "Python (tvb)"
+
+###############################################
+## Instalación manual de paquetes adicionales:
+#
+# mamba activate tvb
+# pip install tvb-library==2.10.0
+#
+## Opción 2
+#
+# micromamba run -n tvb python -m pip install tvb-library==2.10.0

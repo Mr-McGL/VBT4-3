@@ -16,21 +16,22 @@ El ejemplo sigue las convenciones del código de referencia:
 ## Preparación del entorno
 
 ```bash
-micromamba create -f environment.yml
-micromamba activate tvb-single-region
+micromamba create -f conda/environment.yml
+micromamba activate tvb
+python -m pip install tvb-library==2.10.0
 ```
 
 ## Ejecución
 
 ```bash
-python src/run_simulation.py --config config/simulation.json
+python src/zerlaut/run_simulation.py --config config/simulation.json
 ```
 
 La ruta predeterminada de salida es `results/simulation.npz`. Puede cambiarse
 sin editar el JSON:
 
 ```bash
-python src/run_simulation.py \
+python src/zerlaut/run_simulation.py \
   --config config/simulation.json \
   --output results/otra_simulacion.npz
 ```
@@ -41,16 +42,16 @@ El `.npz` contiene `time_ms`, `E_hz`, `I_hz`, `W_e_pA`, `W_i_pA`,
 
 ### Versión didáctica sin JSON
 
-`src/run_simulation_simple.py` contiene las entradas como constantes al
+`src/zerlaut/run_simulation_simple.py` contiene las entradas como constantes al
 principio del fichero y sólo implementa un pulso, una región y el integrador de
 Heun. No lee configuración ni datos externos:
 
 ```bash
-python src/run_simulation_simple.py
+python src/zerlaut/run_simulation_simple.py
 ```
 
 Su resultado es `results/simple_simulation.npz`. El cuaderno
-`notebooks/simulation_step_by_step.ipynb` reconstruye el mismo proceso en
+`notebooks/zerlaut/simulation_step_by_step.ipynb` reconstruye el mismo proceso en
 etapas comentadas.
 
 ## Configuración
@@ -70,11 +71,11 @@ tipo concreto pueden permanecer en el JSON y se ignoran.
 Después de ejecutar la simulación:
 
 ```bash
-jupyter lab notebooks/visualize_simulation.ipynb
+jupyter lab notebooks/zerlaut/visualize_simulation.ipynb
 ```
 
-El cuaderno localiza el resultado tanto si se abre desde la raíz como desde el
-directorio `notebooks/`.
+Ejecute este comando desde la raíz del repositorio para que el cuaderno localice
+`results/simulation.npz`.
 
 ## Conectividad y ficheros externos
 
@@ -85,4 +86,5 @@ región, se pasa al modelo un tensor de acoplamiento lleno de ceros con forma
 El ejemplo configurable sólo lee `config/simulation.json`. El fichero
 `config/parameter_ranges.json` sirve como documentación y no se abre durante
 la simulación. La versión didáctica no lee ningún fichero del proyecto; su única
-dependencia externa es el módulo Python de TVB instalado por `environment.yml`.
+dependencia externa es el módulo Python de TVB, que se instala por separado
+después de crear el entorno definido en `conda/environment.yml`.
