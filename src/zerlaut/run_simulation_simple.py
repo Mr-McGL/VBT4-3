@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Minimal one-region Zerlaut simulation with every input hardcoded."""
 
+import json
 from pathlib import Path
 
 import numpy as np
@@ -11,6 +12,7 @@ from tvb.simulator.models.zerlaut import ZerlautAdaptationFirstOrder
 
 # 1.0) Salida de la simulación.
 OUTPUT_PATH = Path("results/simple_simulation.npz")
+OUTPUT_DTYPE = "float32"
 
 
 ## 1.1) Parámetros de la simulación.
@@ -131,23 +133,90 @@ def integrate(
     return history
 
 
+def save_result(
+    time_ms: np.ndarray,
+    stimulus_hz: np.ndarray,
+    fe_ext_hz: np.ndarray,
+    fi_ext_hz: np.ndarray,
+    history: np.ndarray,
+) -> None:
+    """Save the same NPZ schema and metadata as the configurable simulation."""
+    result = {
+        "time_ms": time_ms,
+        "E_hz": history[:, 0] * 1000.0,
+        "I_hz": history[:, 1] * 1000.0,
+        "W_e_pA": history[:, 2],
+        "W_i_pA": history[:, 3],
+        "stimulus_hz": stimulus_hz,
+        "Fe_ext_hz": fe_ext_hz,
+        "Fi_ext_hz": fi_ext_hz,
+    }
+    config = {
+        "simulation": {
+            "duration_ms": DURATION_MS,
+            "dt_ms": DT_MS,
+            "method": "heun",
+            "initial_state": {
+                "E_hz": 0.0,
+                "I_hz": 0.0,
+                "W_e_pA": 0.0,
+                "W_i_pA": 0.0,
+            },
+        },
+        "model": {
+            "name": "ZerlautAdaptationFirstOrder",
+            "parameters": MODEL_PARAMETERS,
+        },
+        "external_drive": {
+            "scale": INPUT_SCALE,
+            "Fi_ratio": FI_RATIO,
+        },
+        "stimulus": {
+            "type": "pulse",
+            "baseline_hz": BASELINE_HZ,
+            "amplitude_hz": PULSE_AMPLITUDE_HZ,
+            "onset_ms": PULSE_ONSET_MS,
+            "duration_ms": PULSE_DURATION_MS,
+        },
+        "output": {
+            "path": str(OUTPUT_PATH),
+            "dtype": OUTPUT_DTYPE,
+        },
+    }
+    metadata = {
+        "format": "tvb-single-region-npz-v1",
+        "model": config["model"]["name"],
+        "region_count": 1,
+        "units": {
+            "time_ms": "ms",
+            "E_hz": "Hz",
+            "I_hz": "Hz",
+            "W_e_pA": "pA",
+            "W_i_pA": "pA",
+            "stimulus_hz": "Hz",
+            "Fe_ext_hz": "Hz",
+            "Fi_ext_hz": "Hz",
+        },
+        "config": config,
+    }
+
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    arrays = {
+        name: np.asarray(values, dtype=OUTPUT_DTYPE) for name, values in result.items()
+    }
+    np.savez(
+        OUTPUT_PATH,
+        **arrays,
+        metadata_json=np.array(json.dumps(metadata)),
+    )
+
+
 def main() -> None:
     time_ms, stimulus_hz, fe_ext_hz, fi_ext_hz = build_pulse_input()
     history = integrate(build_model(), fe_ext_hz, fi_ext_hz)
 
-    # TVB calcula E e I en kHz. Se multiplican por 1000 antes de guardarlas.
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    np.savez(
-        OUTPUT_PATH,
-        time_ms=time_ms.astype(np.float32),
-        stimulus_hz=stimulus_hz.astype(np.float32),
-        Fe_ext_hz=fe_ext_hz.astype(np.float32),
-        Fi_ext_hz=fi_ext_hz.astype(np.float32),
-        E_hz=(history[:, 0] * 1000.0).astype(np.float32),
-        I_hz=(history[:, 1] * 1000.0).astype(np.float32),
-        W_e_pA=history[:, 2].astype(np.float32),
-        W_i_pA=history[:, 3].astype(np.float32),
-    )
+    # TVB calcula E e I en kHz; save_result las convierte a Hz al guardarlas.
+    save_result(time_ms, stimulus_hz, fe_ext_hz, fi_ext_hz, history)
     print(f"Resultado guardado en {OUTPUT_PATH}")
     print(f"No se ha leído ningún fichero de conectividad ni de datos.")
 
