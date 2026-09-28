@@ -1,0 +1,16 @@
+name: tvb-single-region
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy=1.26
+  - scipy=1.14
+  - matplotlib=3.9
+  - jupyterlab=4
+  - ipykernel=6
+  - pip
+  # Micromamba instala automáticamente esta sección de PyPI al crear el entorno.
+  # Instalación manual equivalente:
+  # micromamba run -n tvb-single-region python -m pip install tvb-library==2.10.0
+  - pip:
+      - tvb-library==2.10.0
