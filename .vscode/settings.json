@@ -1,6 +1,7 @@
 {
     "python.condaPath": "/home/mgarcia/.local/bin/micromamba",
-    "python-envs.defaultPackageManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:pip",
     "python-envs.terminal.autoActivationType": "command",
-    "terminal.integrated.inheritEnv": false
+    "terminal.integrated.inheritEnv": false,
+    "python-envs.defaultEnvManager": "ms-python.python:system"
 }

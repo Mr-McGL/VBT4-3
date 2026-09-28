@@ -2,7 +2,8 @@ name: tvb
 channels:
   - conda-forge
 dependencies:
-  - python=3.13
+  #- python=3.13
+  - python=3.11
   - numpy=1.26
   - scipy=1.14
   - matplotlib=3.9
