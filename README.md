@@ -27,7 +27,11 @@ python -m pip install tvb-library==2.10.0
 python src/zerlaut/run_simulation.py --config config/simulation.json
 ```
 
-La ruta predeterminada de salida es `results/simulation.npz`. Puede cambiarse
+Cada ejecución se identifica mediante `simulation.run` en el JSON. Su valor
+predeterminado es 0.
+
+La run 0 se guarda en `results/simulation_run_0.npz`. Puede cambiarse la ruta
+base sin editar el JSON:
 sin editar el JSON:
 
 ```bash
@@ -36,9 +40,15 @@ python src/zerlaut/run_simulation.py \
   --output results/otra_simulacion.npz
 ```
 
-El `.npz` contiene `time_ms`, `E_hz`, `I_hz`, `W_e_pA`, `W_i_pA`,
-`stimulus_hz`, `Fe_ext_hz`, `Fi_ext_hz` y `metadata_json`. Se carga con
-`numpy.load`; no necesita `pickle`.
+Cada run genera su propio `.npz` con `time_ms`, `E_hz`, `I_hz`, `W_e_pA`,
+`W_i_pA`, `stimulus_hz`, `Fe_ext_hz`, `Fi_ext_hz` y `metadata_json`. Se carga
+con `numpy.load`; no necesita `pickle`.
+
+Las unidades de las series son:
+
+- `time_ms`: milisegundos (ms).
+- `E_hz`, `I_hz`, `stimulus_hz`, `Fe_ext_hz` y `Fi_ext_hz`: hercios (Hz).
+- `W_e_pA` y `W_i_pA`: picoamperios (pA).
 
 ### Versión didáctica sin JSON
 
@@ -50,14 +60,14 @@ Heun. No lee configuración ni datos externos:
 python src/zerlaut/run_simulation_simple.py
 ```
 
-Su resultado es `results/simple_simulation.npz`. El cuaderno
+La run 0 produce `results/simple_simulation_run_0.npz`. El cuaderno
 `notebooks/zerlaut/simulation_step_by_step.ipynb` reconstruye el mismo proceso en
-etapas comentadas.
+etapas comentadas. La constante entera `RUN` selecciona el experimento.
 
 ## Configuración
 
-- `config/simulation.json`: valores utilizados por el ejemplo, incluido el
-  tipo de estímulo.
+- `config/simulation.json`: valores utilizados por el ejemplo, incluidos la
+  run y el tipo de estímulo.
 - `config/parameter_ranges.json`: rangos orientativos inspirados en el proyecto
   de referencia. Es documentación legible por máquinas y el ejecutable no lo
   consume.
@@ -75,7 +85,8 @@ jupyter lab notebooks/zerlaut/visualize_simulation.ipynb
 ```
 
 Ejecute este comando desde la raíz del repositorio para que el cuaderno localice
-`results/simulation.npz`.
+el fichero de resultados. La lista `RUNS` permite mostrar una o varias
+ejecuciones en las mismas gráficas.
 
 ## Conectividad y ficheros externos
 

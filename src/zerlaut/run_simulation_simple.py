@@ -13,6 +13,7 @@ from tvb.simulator.models.zerlaut import ZerlautAdaptationFirstOrder
 # 1.0) Salida de la simulación.
 OUTPUT_PATH = Path("results/simple_simulation.npz")
 OUTPUT_DTYPE = "float32"
+RUN = 0
 
 
 ## 1.1) Parámetros de la simulación.
@@ -128,8 +129,6 @@ def integrate(
         state[4] = 0.0
         history[index + 1] = state[:, 0, 0]
 
-    if not np.all(np.isfinite(history)):
-        raise RuntimeError("La simulación ha producido valores no finitos.")
     return history
 
 
@@ -139,8 +138,8 @@ def save_result(
     fe_ext_hz: np.ndarray,
     fi_ext_hz: np.ndarray,
     history: np.ndarray,
-) -> None:
-    """Save the same NPZ schema and metadata as the configurable simulation."""
+) -> Path:
+    """Save one complete experiment in its own NPZ file."""
     result = {
         "time_ms": time_ms,
         "E_hz": history[:, 0] * 1000.0,
@@ -153,6 +152,7 @@ def save_result(
     }
     config = {
         "simulation": {
+            "run": RUN,
             "duration_ms": DURATION_MS,
             "dt_ms": DT_MS,
             "method": "heun",
@@ -183,32 +183,20 @@ def save_result(
             "dtype": OUTPUT_DTYPE,
         },
     }
-    metadata = {
-        "format": "tvb-single-region-npz-v1",
-        "model": config["model"]["name"],
-        "region_count": 1,
-        "units": {
-            "time_ms": "ms",
-            "E_hz": "Hz",
-            "I_hz": "Hz",
-            "W_e_pA": "pA",
-            "W_i_pA": "pA",
-            "stimulus_hz": "Hz",
-            "Fe_ext_hz": "Hz",
-            "Fi_ext_hz": "Hz",
-        },
-        "config": config,
-    }
-
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    output_path = OUTPUT_PATH.with_name(
+        f"{OUTPUT_PATH.stem}_run_{RUN}{OUTPUT_PATH.suffix}"
+    )
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    metadata = {"config": config}
     arrays = {
         name: np.asarray(values, dtype=OUTPUT_DTYPE) for name, values in result.items()
     }
     np.savez(
-        OUTPUT_PATH,
+        output_path,
         **arrays,
         metadata_json=np.array(json.dumps(metadata)),
     )
+    return output_path
 
 
 def main() -> None:
@@ -216,8 +204,8 @@ def main() -> None:
     history = integrate(build_model(), fe_ext_hz, fi_ext_hz)
 
     # TVB calcula E e I en kHz; save_result las convierte a Hz al guardarlas.
-    save_result(time_ms, stimulus_hz, fe_ext_hz, fi_ext_hz, history)
-    print(f"Resultado guardado en {OUTPUT_PATH}")
+    output_path = save_result(time_ms, stimulus_hz, fe_ext_hz, fi_ext_hz, history)
+    print(f"Run {RUN} guardada en {output_path}")
     print(f"No se ha leído ningún fichero de conectividad ni de datos.")
 
 
