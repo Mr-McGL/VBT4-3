@@ -137,6 +137,7 @@ def save_result(
     fe_ext_hz: np.ndarray,
     fi_ext_hz: np.ndarray,
     history: np.ndarray,
+    output_path: Path = OUTPUT_PATH,
 ) -> Path:
     """Save one complete experiment in its own NPZ file."""
     result = {
@@ -177,21 +178,21 @@ def save_result(
             "duration_ms": PULSE_DURATION_MS,
         },
         "output": {
-            "path": str(OUTPUT_PATH),
+            "path": str(output_path),
             "dtype": OUTPUT_DTYPE,
         },
     }
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     metadata = {"config": config}
     arrays = {
         name: np.asarray(values, dtype=OUTPUT_DTYPE) for name, values in result.items()
     }
     np.savez(
-        OUTPUT_PATH,
+        output_path,
         **arrays,
         metadata_json=np.array(json.dumps(metadata)),
     )
-    return OUTPUT_PATH
+    return output_path
 
 
 def main() -> None:

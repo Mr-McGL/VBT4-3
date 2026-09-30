@@ -42,7 +42,8 @@ tvb_test/
 ├── src/
 │   └── zerlaut/
 │       ├── run_simulation.py        # Ejemplo configurable mediante JSON
-│       └── run_simulation_simple.py # Ejemplo didáctico con entradas hardcodeadas
+│       ├── run_simulation_simple.py # Ejemplo didáctico con entradas hardcodeadas
+│       └── run_simulation_tvb.py    # Mismo pulso con HeunDeterministic de TVB
 └── results/                   # Salidas NPZ generadas; ignoradas por Git
 ```
 
@@ -59,12 +60,12 @@ tvb_test/
 - `conda/`: definición del entorno micromamba; `tvb-library` se instala después mediante `pip`.
 - `config/`: configuración JSON activa y catálogo independiente de rangos admisibles/orientativos.
 - `notebooks/zerlaut/`: cuadernos Jupyter para visualizar la salida configurable y recorrer paso a paso la versión didáctica.
-- `src/zerlaut/`: implementación propia; `run_simulation.py` acepta configuración JSON y `run_simulation_simple.py` agrupa entradas hardcodeadas para explicar el flujo mínimo.
+- `src/zerlaut/`: implementación propia; `run_simulation.py` acepta configuración JSON, `run_simulation_simple.py` agrupa entradas hardcodeadas y `run_simulation_tvb.py` integra esas mismas entradas con TVB.
 - `results/`: directorio generado durante la ejecución. Sus NPZ no se versionan y no deben editarse manualmente.
 
 ## Estado funcional del proyecto
 
-La implementación propia contiene dos ejemplos ejecutables de TVB para una única región con el modelo `ZerlautAdaptationFirstOrder`: uno configurable mediante `config/simulation.json` y otro autocontenido con entradas hardcodeadas. Producen `results/simulation.npz` y `results/simple_simulation.npz`. El cuaderno de visualización puede superponer uno o varios ficheros de resultados.
+La implementación propia contiene tres ejemplos ejecutables para una única región con el modelo `ZerlautAdaptationFirstOrder`: uno configurable mediante `config/simulation.json`, otro autocontenido con entradas hardcodeadas y una variante que usa `HeunDeterministic` de TVB. Producen `results/simulation.npz`, `results/simple_simulation.npz` y `results/tvb_simulation.npz`. El cuaderno de visualización puede superponer uno o varios ficheros de resultados.
 
 Cuando se añada una implementación propia, deberá situarse fuera de `0.sample_code` y quedar descrita aquí, indicando como mínimo:
 

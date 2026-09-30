@@ -60,6 +60,15 @@ El resultado es `results/simple_simulation.npz`. El cuaderno
 `notebooks/zerlaut/simulation_step_by_step.ipynb` reconstruye el mismo proceso en
 etapas comentadas.
 
+La variante siguiente usa `HeunDeterministic` de TVB con las mismas entradas y
+guarda el resultado por separado:
+
+```bash
+python src/zerlaut/run_simulation_tvb.py
+```
+
+El resultado es `results/tvb_simulation.npz`.
+
 ## Configuración
 
 - `config/simulation.json`: valores utilizados por el ejemplo, incluido el
@@ -86,7 +95,7 @@ en las mismas gráficas.
 
 ## Conectividad y ficheros externos
 
-Ninguno de los dos scripts carga un fichero de conectividad. Al haber una sola
+Ninguno de los tres scripts carga un fichero de conectividad. Al haber una sola
 región, se pasa al modelo un tensor de acoplamiento lleno de ceros con forma
 `(1, 1, 1)`.
 
