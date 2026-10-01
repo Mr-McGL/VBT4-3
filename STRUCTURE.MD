@@ -41,9 +41,13 @@ tvb_test/
 │       └── visualize_simulation.ipynb
 ├── src/
 │   └── zerlaut/
+│       ├── parameter_simulator.py   # Simulator con parámetros temporales por región o superficie
+│       ├── parameter_simulator_back.py # Copia de la versión anterior, solo por regiones
 │       ├── run_simulation.py        # Ejemplo configurable mediante JSON
 │       ├── run_simulation_simple.py # Ejemplo didáctico con entradas hardcodeadas
-│       └── run_simulation_tvb.py    # Mismo pulso con HeunDeterministic de TVB
+│       ├── run_simulation_heun.py   # Mismo pulso con HeunDeterministic paso a paso
+│       ├── run_simulation_parameter.py # Ejemplo de cuatro entradas temporales
+│       └── run_simulation_tvb.py    # Simulación completa con Simulator y monitor Raw
 └── results/                   # Salidas NPZ generadas; ignoradas por Git
 ```
 
@@ -60,12 +64,12 @@ tvb_test/
 - `conda/`: definición del entorno micromamba; `tvb-library` se instala después mediante `pip`.
 - `config/`: configuración JSON activa y catálogo independiente de rangos admisibles/orientativos.
 - `notebooks/zerlaut/`: cuadernos Jupyter para visualizar la salida configurable y recorrer paso a paso la versión didáctica.
-- `src/zerlaut/`: implementación propia; `run_simulation.py` acepta configuración JSON, `run_simulation_simple.py` agrupa entradas hardcodeadas y `run_simulation_tvb.py` integra esas mismas entradas con TVB.
+- `src/zerlaut/`: implementación propia; `parameter_simulator.py` define la subclase de TVB para varios parámetros temporales, `parameter_simulator_back.py` conserva la versión anterior limitada a regiones y `run_simulation.py` acepta configuración JSON, `run_simulation_simple.py` agrupa entradas hardcodeadas, `run_simulation_heun.py` integra paso a paso con `HeunDeterministic`, `run_simulation_tvb.py` usa `Simulator` y `Raw`, y `run_simulation_parameter.py` usa `ParameterSimulator` para actualizar cuatro entradas en cada paso.
 - `results/`: directorio generado durante la ejecución. Sus NPZ no se versionan y no deben editarse manualmente.
 
 ## Estado funcional del proyecto
 
-La implementación propia contiene tres ejemplos ejecutables para una única región con el modelo `ZerlautAdaptationFirstOrder`: uno configurable mediante `config/simulation.json`, otro autocontenido con entradas hardcodeadas y una variante que usa `HeunDeterministic` de TVB. Producen `results/simulation.npz`, `results/simple_simulation.npz` y `results/tvb_simulation.npz`. El cuaderno de visualización puede superponer uno o varios ficheros de resultados.
+La implementación propia contiene cinco ejemplos ejecutables para una única región con el modelo `ZerlautAdaptationFirstOrder`: uno configurable mediante `config/simulation.json`, otro autocontenido con entradas hardcodeadas, uno con `HeunDeterministic` paso a paso, otro con `Simulator` y `Raw` de TVB, y un ejemplo de cuatro entradas temporales con `ParameterSimulator`. Producen `results/simulation.npz`, `results/simple_simulation.npz`, `results/tvb_simulation.npz`, `results/tvb_full_simulation.npz` y `results/parameter_simulation.npz`. El cuaderno de visualización puede superponer uno o varios ficheros de resultados.
 
 Cuando se añada una implementación propia, deberá situarse fuera de `0.sample_code` y quedar descrita aquí, indicando como mínimo:
 

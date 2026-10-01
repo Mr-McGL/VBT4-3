@@ -60,14 +60,41 @@ El resultado es `results/simple_simulation.npz`. El cuaderno
 `notebooks/zerlaut/simulation_step_by_step.ipynb` reconstruye el mismo proceso en
 etapas comentadas.
 
-La variante siguiente usa `HeunDeterministic` de TVB con las mismas entradas y
-guarda el resultado por separado:
+La variante `run_simulation_heun.py` conserva la integración paso a paso
+con `HeunDeterministic` de TVB:
+
+```bash
+python src/zerlaut/run_simulation_heun.py
+```
+
+El resultado es `results/tvb_simulation.npz`.
+
+La simulación completa con `Simulator` y el monitor `Raw` está en otro script.
+TVB realiza la integración y registra las cinco variables:
 
 ```bash
 python src/zerlaut/run_simulation_tvb.py
 ```
 
-El resultado es `results/tvb_simulation.npz`.
+El resultado es `results/tvb_full_simulation.npz`.
+
+Para cambiar varios parámetros del modelo antes de cada paso con
+`ParameterSimulator`:
+
+```bash
+python src/zerlaut/run_simulation_parameter.py
+```
+
+`input_parameters` es una lista de pares `(nombre, fuente)`. Cada fuente puede
+ser un array de forma `(pasos, regiones)`, una función `f(t_ms)` que devuelva
+un valor por región, o una lista de funciones con una función por región. El
+ejemplo combina arrays y funciones para las cuatro entradas externas de Zerlaut
+y guarda `results/parameter_simulation.npz`. El valor se fija al inicio de
+cada paso y se mantiene durante las dos etapas de Heun. En simulaciones de
+superficie, los valores regionales se asignan a los nodos con `region_mapping`.
+
+Esta subclase usa el bucle de referencia de TVB en CPU. La ejecución en GPU
+necesita que el backend GPU lea las mismas series de valores.
 
 ## Configuración
 
