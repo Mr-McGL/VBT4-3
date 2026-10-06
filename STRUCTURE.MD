@@ -13,6 +13,8 @@ tvb_test/
 ├── STRUCTURE.MD
 ├── VBT_4-3.MD
 ├── .gitignore
+├── .env_default             # Tracked defaults for working and results directories
+├── .env                     # Local path overrides; ignored by Git
 ├── .prompts/                 # Área reservada; prohibido leerla o modificarla
 ├── .vscode/
 │   └── settings.json         # Configuración local del editor y de micromamba
@@ -37,6 +39,7 @@ tvb_test/
 │   └── parameter_ranges.json    # Rangos orientativos, no consumidos por el ejecutable
 ├── notebooks/
 │   └── zerlaut/
+│       ├── parameter_simulation_step_by_step.ipynb
 │       ├── simulation_step_by_step.ipynb
 │       └── visualize_simulation.ipynb
 ├── src/
@@ -57,19 +60,21 @@ tvb_test/
 - `README.md`: instrucciones para crear el entorno, ejecutar la simulación y abrir el cuaderno.
 - `STRUCTURE.MD`: mapa de la estructura actual y contrato para mantenerla documentada.
 - `VBT_4-3.MD`: índice funcional detallado del código de referencia `0.sample_code/sinovia`.
-- `.gitignore`: excluye del repositorio principal la carpeta de referencia y el área reservada `.prompts`.
+- `.gitignore`: excluye del repositorio principal la carpeta de referencia, el área reservada `.prompts` y las variables locales `.env`.
+- `.env_default`: valores versionados de las rutas del directorio de trabajo y de resultados; no contiene parámetros de simulación.
+- `.env`: ajustes locales opcionales de esas rutas que sobrescriben `.env_default`; ignorado por Git.
 - `.prompts/`: contenido reservado al usuario. Los agentes no deben leer, listar, buscar ni modificar esta carpeta.
 - `.vscode/`: configuración local del editor, incluido el uso de micromamba como gestor de entornos.
 - `0.sample_code/`: código externo de referencia ignorado por Git y de solo lectura; el proyecto consultado está en `sinovia/`.
-- `conda/`: definición del entorno micromamba; `tvb-library` se instala después mediante `pip`.
+- `conda/`: definición del entorno micromamba, incluido `python-dotenv`; `tvb-library` se instala después mediante `pip`.
 - `config/`: configuración JSON activa y catálogo independiente de rangos admisibles/orientativos.
-- `notebooks/zerlaut/`: cuadernos Jupyter para visualizar la salida configurable y recorrer paso a paso la versión didáctica.
+- `notebooks/zerlaut/`: cuadernos Jupyter para visualizar resultados y recorrer paso a paso tanto la versión didáctica como la simulación con cuatro parámetros temporales.
 - `src/zerlaut/`: implementación propia; `parameter_simulator.py` define `InputParameterSimulator` para varios parámetros temporales, `parameter_simulator_back.py` conserva la versión anterior limitada a regiones y `run_simulation.py` acepta configuración JSON, `run_simulation_simple.py` agrupa entradas hardcodeadas, `run_simulation_heun.py` integra paso a paso con `HeunDeterministic`, `run_simulation_tvb.py` usa `Simulator` y `Raw`, y `run_simulation_parameter.py` usa `InputParameterSimulator` para actualizar cuatro entradas en cada paso.
 - `results/`: directorio generado durante la ejecución. Sus NPZ no se versionan y no deben editarse manualmente.
 
 ## Estado funcional del proyecto
 
-La implementación propia contiene cinco ejemplos ejecutables para una única región con el modelo `ZerlautAdaptationFirstOrder`: uno configurable mediante `config/simulation.json`, otro autocontenido con entradas hardcodeadas, uno con `HeunDeterministic` paso a paso, otro con `Simulator` y `Raw` de TVB, y un ejemplo de cuatro entradas temporales con `InputParameterSimulator`. Producen `results/simulation.npz`, `results/simple_simulation.npz`, `results/tvb_simulation.npz`, `results/tvb_full_simulation.npz` y `results/parameter_simulation.npz`. El cuaderno de visualización puede superponer uno o varios ficheros de resultados.
+La implementación propia contiene cinco ejemplos ejecutables para una única región con el modelo `ZerlautAdaptationFirstOrder`: uno configurable mediante `config/simulation.json`, otro autocontenido con entradas hardcodeadas, uno con `HeunDeterministic` paso a paso, otro con `Simulator` y `Raw` de TVB, y un ejemplo de cuatro entradas temporales con `InputParameterSimulator`. Producen `results/simulation.npz`, `results/simple_simulation.npz`, `results/tvb_simulation.npz`, `results/tvb_full_simulation.npz` y `results/parameter_simulation.npz`. El cuaderno `parameter_simulation_step_by_step.ipynb` incluye la lógica y todos los parámetros de simulación en sus propias celdas; usa `.env_default` y `.env` solo para localizar los directorios de trabajo y resultados, guarda `parameter_simulation_notebook.npz` en el directorio de resultados y muestra los resultados al final. El cuaderno de visualización puede superponer uno o varios ficheros de resultados.
 
 Cuando se añada una implementación propia, deberá situarse fuera de `0.sample_code` y quedar descrita aquí, indicando como mínimo:
 

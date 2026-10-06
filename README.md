@@ -101,6 +101,10 @@ function per node. These values are applied directly to the nodes.
 Esta subclase usa el bucle de referencia de TVB en CPU. La ejecución en GPU
 necesita que el backend GPU lea las mismas series de valores.
 
+The step-by-step parameter notebook reads local directory settings from `.env`,
+which is ignored by Git. See `.env_default` for the available settings and their
+defaults. Simulation parameters are defined in the notebook itself.
+
 ## Configuración
 
 - `config/simulation.json`: valores utilizados por el ejemplo, incluido el

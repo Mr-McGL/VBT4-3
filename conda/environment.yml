@@ -9,6 +9,7 @@ dependencies:
   - matplotlib=3.9
   - jupyterlab=4
   - ipykernel=6
+  - python-dotenv
   - pip
   #- pip:
   #    - tvb-library==2.10.0

@@ -31,6 +31,14 @@ Estas reglas son obligatorias para cualquier agente que trabaje en este reposito
 - Si una modificación hace que su árbol, descripciones o relaciones dejen de ser correctos, actualizar `STRUCTURE.MD` como parte del mismo trabajo.
 - No dar por terminada una tarea estructural mientras `STRUCTURE.MD` esté desactualizado.
 
+## Environment configuration and teaching notebooks
+
+- Keep only execution-environment settings, such as working and results directories, in the tracked root `.env_default` file. Do not put simulation, model, stimulus, or output filename values in dotenv files.
+- Put local overrides in the root `.env` file. Keep `.env` ignored by Git and never commit its contents.
+- Load `.env_default` first, then let `.env` override it. Document any new environment variable in `.env_default` when adding it. Resolve a relative working directory from the dotenv files' directory, and a relative results directory from the working directory; accept absolute paths for both.
+- Teaching notebooks must contain the simulation logic they explain. They may import third-party packages and Python standard-library modules, but must not import project modules or functions from `src/` or other notebooks. Repeat the necessary code in the notebook so each step can be read and run independently of project source imports.
+- Define simulation and model values explicitly in teaching notebooks so readers can see and edit them alongside the steps they control.
+
 ## Directorio protegido `.prompts`
 
 - Está terminantemente prohibido leer, listar, buscar, indexar, copiar, mover, renombrar o modificar `.prompts` y todo su contenido.
