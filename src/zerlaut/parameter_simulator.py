@@ -1,5 +1,25 @@
 """TVB simulator that updates model parameters before each integration step."""
 
+# Notas de desarrollo:
+# - Se permiten dos tipos de simulación de superfice o de región. Cuando se define una simulación superficial,
+#   los parámetros pueden definirse de forma global, por region o por nodo. 
+# - La variable self.surface.region_mapping permite mapear los parámetros definidos por región a los nodos de la superficie.
+#   ```py
+#   values_by_region = np.array([10, 20])
+#   region_mapping = np.array([0, 0, 1, 1, 0])
+#   values_by_node = values_by_region[region_mapping]
+#       
+#   #OUT:
+#   np.array([10, 10, 20, 20, 10])
+#   ``` 
+# - **Importante:** al llamar a configuración los párametros de los modelos se expanden a regiones o nodos. Aunque
+#   en teoría si un parametro cambia esta expansión debería hacerse en cada paso de integración. Por seguridad,
+#   la función de de actualización va a expadir los parámetros. 
+# REFS:
+# - https://github.com/the-virtual-brain/tvb-root/blob/master/tvb_library/tvb/simulator/models/base.py
+
+
+
 import numpy as np
 from tvb.basic.neotraits.api import List, NArray
 from tvb.simulator.simulator import Simulator
@@ -24,57 +44,46 @@ class InputParameterSimulator(Simulator):
         # Let TVB configure the model, connectivity, and optional surface.
         super().configure(full_configure=full_configure)
 
-        # Validate the input parameter sources.
+        # Validate each source and remember how to read it during the run.
         n_regions = self.connectivity.number_of_regions
-        names = set()
-        self._parameter_updates = []
+        self._parameter_sources, names = [], set()
+    
         for name, source in self.input_parameters:
             # Reject duplicate parameter names.
             if name in names:
                 raise ValueError(f"Duplicate parameter: {name}")
             names.add(name)
 
+            # Validate that the parameter exists and is a numeric array.
             descriptor = getattr(type(self.model), name, None)
             if not isinstance(descriptor, NArray):
                 raise ValueError(f"Unknown numeric parameter: {name}")
-            current = np.asarray(getattr(self.model, name))
-            if current.size not in (1, self.number_of_nodes) or not np.issubdtype(
-                current.dtype, np.floating
-            ):
-                raise ValueError(f"{name} must contain real values per region")
 
+            # ToDo: Validate the type of the array. 
+            # ToDo:Por ahora solo funciona para floats
+
+            # Validate the source type and shape.
+            source_type = "invalid"
             if isinstance(source, np.ndarray):
-                if source.ndim != 2 or source.shape[1] not in (1, n_regions):
-                    raise ValueError(
-                        f"{name} needs an array of shape (steps, regions) or (steps, 1)"
-                    )
-
-                def values_at(step, time_ms, data=source, parameter_name=name):
-                    if step >= len(data):
-                        raise ValueError(f"Missing {parameter_name} values at step {step + 1}")
-                    return data[step]
-
-            elif callable(source):
-                def values_at(step, time_ms, function=source, parameter_name=name):
-                    value = np.asarray(function(time_ms), dtype=float)
-                    if value.ndim != 0:
-                        raise ValueError(f"{parameter_name} function must return one scalar")
-                    return value
-
+                if source.shape[1] == n_regions: 
+                    source_type = "region_array"
+                else:
+                    source_type = "scalar_array"
             elif (
                 isinstance(source, (list, tuple))
-                and len(source) == n_regions
                 and all(map(callable, source))
             ):
-                def values_at(step, time_ms, functions=tuple(source)):
-                    return [function(time_ms) for function in functions]
+                if len(source) == n_regions:
+                    source_type = "region_functions"
+                elif len(source) == 1:
+                    source_type = "scalar_function"
 
-            else:
+            if source_type == "invalid":
                 raise ValueError(
                     f"{name} needs an array, a function, or one function per region"
                 )
 
-            self._parameter_updates.append((name, values_at))
+            self._parameter_sources.append((name, source, source_type))
         return self
 
     def _loop_update_stimulus(self, step, stimulus):
@@ -84,11 +93,24 @@ class InputParameterSimulator(Simulator):
         time_ms = index * self.integrator.dt
 
         n_regions = self.connectivity.number_of_regions
-        for name, values_at in self._parameter_updates:
-            values = np.asarray(values_at(index, time_ms), dtype=float)
-            if values.shape not in ((), (1,), (n_regions,)):
-                raise ValueError(f"{name} must provide one scalar or one value per region")
-            values = np.broadcast_to(values, (n_regions,))
+        for name, source, source_type in self._parameter_sources:
+            if source_type == "region_array":
+                values = source[index]
+            elif source_type == "scalar_array":
+                values = np.full(n_regions, source[index, 0])
+            elif source_type == "scalar_function":
+                value = np.asarray(source(time_ms), dtype=float)
+                values = np.full(n_regions, value)
+            else:
+                values = [function(time_ms) for function in source]
+
+            values = np.asarray(values, dtype=float)
+            if values.shape != (n_regions,):
+                raise ValueError(f"{name} must provide one value per region")
+            
             if self.surface is not None:
                 values = values[self.surface.region_mapping]
+
+    
             setattr(self.model, name, values[:, np.newaxis])
+, por ahora se hace una sola vez al configurar la simulación.
