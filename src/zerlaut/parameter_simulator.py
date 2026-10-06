@@ -5,17 +5,30 @@ from tvb.basic.neotraits.api import List, NArray
 from tvb.simulator.simulator import Simulator
 
 
-class ParameterSimulator(Simulator):
+class InputParameterSimulator(Simulator):
     """Aplica pares (nombre, array o función) a parámetros por región."""
 
     input_parameters = List(
         of=tuple,
         default=(),
-        label="Parámetros de entrada variables en el tiempo",
+        label=(
+"""
+Parámetros de entrada variables en el tiempo:
+<<<<<
+Añadir como debe ser la tupla de entrada, por ejemplo: ('nombre_parametro', array_o_funcion)
+Cuando es un array debe ser tener el tamño del número de regiones.
+En el caso de la función de indica que debe devolver. 
+Si es un array de un único elemento se repite en todas las regiones<<<<<Haz esto sin perder la forma de trabajar de TVB>>
+
+>>>>>
+"""
+        )
     )
+    
 
     @staticmethod
     def _region_functions(source):
+        """Comprueba si la entrada es una lista de funciones por región."""
         return (
             isinstance(source, (list, tuple, np.ndarray))
             and np.ndim(source) == 1
@@ -23,15 +36,21 @@ class ParameterSimulator(Simulator):
         )
 
     def configure(self, full_configure=True):
+
+        # Función de configuración por defecto.
         super().configure(full_configure=full_configure)
 
+
+        # Validación de la lista de prametros de entrada.
         n_regions = self.connectivity.number_of_regions
         names = set()
         for name, source in self.input_parameters:
+            # Evitar parámetros repetidos.
             if name in names:
                 raise ValueError(f"Parámetro repetido: {name}")
             names.add(name)
 
+            
             descriptor = getattr(type(self.model), name, None)
             if not isinstance(descriptor, NArray):
                 raise ValueError(f"Parámetro numérico desconocido: {name}")
@@ -54,7 +73,10 @@ class ParameterSimulator(Simulator):
         return self
 
     def _loop_update_stimulus(self, step, stimulus):
+        # Fun
         super()._loop_update_stimulus(step, stimulus)
+
+
         index = step - 1  # El paso 1 comienza en t=0.
         time_ms = index * self.integrator.dt
 

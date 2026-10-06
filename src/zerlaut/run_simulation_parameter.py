@@ -9,7 +9,7 @@ from tvb.simulator.coupling import Linear
 from tvb.simulator.integrators import HeunDeterministic
 from tvb.simulator.monitors import Raw
 
-from parameter_simulator import ParameterSimulator
+from parameter_simulator import InputParameterSimulator
 from run_simulation_simple import (
     BASELINE_HZ,
     DT_MS,
@@ -45,7 +45,7 @@ def main() -> None:
 
     fe_khz = (fe_ext_hz[:-1] / 1000.0)[:, np.newaxis]
     fi_khz = (fi_ext_hz[:-1] / 1000.0)[:, np.newaxis]
-    simulator = ParameterSimulator(
+    simulator = InputParameterSimulator(
         model=model,
         input_parameters=[
             ("external_input_ex_ex", fe_khz),
