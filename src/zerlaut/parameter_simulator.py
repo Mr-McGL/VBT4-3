@@ -15,10 +15,9 @@
 # - **Importante:** al llamar a configuración los párametros de los modelos se expanden a regiones o nodos. Aunque
 #   en teoría si un parametro cambia esta expansión debería hacerse en cada paso de integración. Por seguridad,
 #   la función de de actualización va a expadir los parámetros. 
+#
 # REFS:
 # - https://github.com/the-virtual-brain/tvb-root/blob/master/tvb_library/tvb/simulator/models/base.py
-
-
 
 import numpy as np
 from tvb.basic.neotraits.api import List, NArray
