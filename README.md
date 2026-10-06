@@ -79,16 +79,18 @@ python src/zerlaut/run_simulation_tvb.py
 El resultado es `results/tvb_full_simulation.npz`.
 
 Para cambiar varios parámetros del modelo antes de cada paso con
-`ParameterSimulator`:
+`InputParameterSimulator`:
 
 ```bash
 python src/zerlaut/run_simulation_parameter.py
 ```
 
 `input_parameters` es una lista de pares `(nombre, fuente)`. Cada fuente puede
-ser un array de forma `(pasos, regiones)`, una función `f(t_ms)` que devuelva
-un valor por región, o una lista de funciones con una función por región. El
-ejemplo combina arrays y funciones para las cuatro entradas externas de Zerlaut
+ser un array de forma `(pasos, regiones)` o `(pasos, 1)`, una función `f(t_ms)`
+que devuelva un único valor para todas las regiones, o una lista de funciones
+escalares con una función por región. Los parámetros constantes se fijan
+directamente en el modelo. El ejemplo combina arrays y funciones para las
+cuatro entradas externas de Zerlaut
 y guarda `results/parameter_simulation.npz`. El valor se fija al inicio de
 cada paso y se mantiene durante las dos etapas de Heun. En simulaciones de
 superficie, los valores regionales se asignan a los nodos con `region_mapping`.
