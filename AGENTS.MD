@@ -9,6 +9,12 @@ Estas reglas son obligatorias para cualquier agente que trabaje en este reposito
 3. Usar `VBT_4-3.MD` para localizar el fichero concreto que contiene la información buscada. No recorrer ni buscar directamente por toda la carpeta `0.sample_code/sinovia` como primer método de investigación.
 4. Una vez localizado el fichero mediante la guía, puede leerse el fragmento necesario como fuente de inspiración o para confirmar un detalle.
 
+## Language and TODO comments
+
+- Write new or edited project content in English, including code comments, docstrings, identifiers, messages, and documentation, unless the user explicitly requests another language.
+- Keep existing development notes in their original language unless the user explicitly asks to translate them.
+- Treat TODO comments in source code as pending notes. Do not implement, remove, or rewrite a TODO until the user explicitly asks to address it.
+
 ## Código de referencia: `0.sample_code/sinovia`
 
 - `0.sample_code/sinovia` contiene código de referencia, no la implementación editable de este proyecto.

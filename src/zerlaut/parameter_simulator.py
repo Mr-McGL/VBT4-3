@@ -26,7 +26,7 @@ from tvb.simulator.simulator import Simulator
 
 
 class InputParameterSimulator(Simulator):
-    """Apply time varying parameter values supplied per region."""
+    """Apply time varying parameter values to regions or nodes."""
 
     input_parameters = List(
         of=tuple,
@@ -34,9 +34,9 @@ class InputParameterSimulator(Simulator):
         label="Time varying model parameters",
         doc=(
             "Each entry is (parameter_name, source). Source is an array of "
-            "shape (steps, regions) or (steps, 1), a function f(time_ms) "
-            "returning one scalar for all regions, or one scalar function "
-            "per region. For a constant value, set the model parameter directly."
+            "shape (steps, regions), (steps, nodes), or (steps, 1), or a "
+            "sequence of scalar functions for each region, each node, or all "
+            "nodes. For a constant value, set the model parameter directly."
         ),
     )
 
@@ -45,7 +45,7 @@ class InputParameterSimulator(Simulator):
         super().configure(full_configure=full_configure)
 
         # Validate each source and remember how to read it during the run.
-        n_regions = self.connectivity.number_of_regions
+        n_regions, n_nodes = self.connectivity.number_of_regions, self.number_of_nodes
         self._parameter_sources, names = [], set()
     
         for name, source in self.input_parameters:
@@ -65,22 +65,30 @@ class InputParameterSimulator(Simulator):
             # Validate the source type and shape.
             source_type = "invalid"
             if isinstance(source, np.ndarray):
-                if source.shape[1] == n_regions: 
+                if source.ndim != 2:
+                    source_type = "invalid"
+                elif self.surface is not None and source.shape[1] == n_nodes: # It must be the first
+                     source_type = "node_array"
+                elif source.shape[1] == n_regions:
                     source_type = "region_array"
-                else:
-                    source_type = "scalar_array"
+                elif source.shape[1] == 1:
+                    source_type = "scalar_array" # It must be the last
+
             elif (
                 isinstance(source, (list, tuple))
                 and all(map(callable, source))
             ):
-                if len(source) == n_regions:
+                if self.surface is not None and len(source) == n_nodes: # It must be the first
+                    source_type = "node_functions"
+                elif len(source) == n_regions:
                     source_type = "region_functions"
-                elif len(source) == 1:
+                elif len(source) == 1: # It must be the last
                     source_type = "scalar_function"
+                
 
             if source_type == "invalid":
                 raise ValueError(
-                    f"{name} needs an array, a function, or one function per region"
+                    f"{name} needs an array or one function per region or node"
                 )
 
             self._parameter_sources.append((name, source, source_type))
@@ -94,23 +102,21 @@ class InputParameterSimulator(Simulator):
 
         n_regions = self.connectivity.number_of_regions
         for name, source, source_type in self._parameter_sources:
-            if source_type == "region_array":
-                values = source[index]
-            elif source_type == "scalar_array":
-                values = np.full(n_regions, source[index, 0])
-            elif source_type == "scalar_function":
-                value = np.asarray(source(time_ms), dtype=float)
-                values = np.full(n_regions, value)
-            else:
-                values = [function(time_ms) for function in source]
+            match source_type:
+                case "region_array" | "node_array": 
+                    values = source[index]
+                case "scalar_array": 
+                    values = np.full(self.number_of_nodes, source[index, 0])
+                case "scalar_function": 
+                    values = np.full(self.number_of_nodes, source[0](time_ms))
+                case "region_functions" | "node_functions": 
+                    values = [function(time_ms) for function in source]
 
+            # ToDo: Por ahora esta restringido floats. 
             values = np.asarray(values, dtype=float)
-            if values.shape != (n_regions,):
-                raise ValueError(f"{name} must provide one value per region")
             
-            if self.surface is not None:
+            if self.surface is not None and source_type.startswith("region_"):
                 values = values[self.surface.region_mapping]
-
-    
+   
             setattr(self.model, name, values[:, np.newaxis])
-, por ahora se hace una sola vez al configurar la simulación.
+

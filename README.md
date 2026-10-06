@@ -95,6 +95,9 @@ y guarda `results/parameter_simulation.npz`. El valor se fija al inicio de
 cada paso y se mantiene durante las dos etapas de Heun. En simulaciones de
 superficie, los valores regionales se asignan a los nodos con `region_mapping`.
 
+Surface simulations also accept arrays of shape `(steps, nodes)` or one
+function per node. These values are applied directly to the nodes.
+
 Esta subclase usa el bucle de referencia de TVB en CPU. La ejecución en GPU
 necesita que el backend GPU lea las mismas series de valores.
 
