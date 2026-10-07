@@ -10,6 +10,7 @@ dependencies:
   - jupyterlab=4
   - ipykernel=6
   - python-dotenv
+  - rich
   - pip
   #- pip:
   #    - tvb-library==2.10.0
