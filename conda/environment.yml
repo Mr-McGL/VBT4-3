@@ -12,8 +12,9 @@ dependencies:
   - python-dotenv
   - rich
   - pip
-  #- pip:
-  #    - tvb-library==2.10.0
+  - pip:
+      - tvb-library==2.10.0
+      - tvb-gdist==2.9.2
 
 
 ##############################################
@@ -26,13 +27,3 @@ dependencies:
 # mamba run -n tvb python -m ipykernel install --user \
 #     --name tvb \
 #     --display-name "Python (tvb)"
-
-###############################################
-## Instalación manual de paquetes adicionales:
-#
-# mamba activate tvb
-# pip install tvb-library==2.10.0
-#
-## Opción 2
-#
-# micromamba run -n tvb python -m pip install tvb-library==2.10.0
