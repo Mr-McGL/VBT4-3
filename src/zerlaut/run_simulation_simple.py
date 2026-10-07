@@ -15,11 +15,11 @@ OUTPUT_PATH = Path("results/simple_simulation.npz")
 OUTPUT_DTYPE = "float32"
 
 
-## 1.1) Parámetros de la simulación.
+# 1.1) Parámetros de la simulación.
 DURATION_MS = 2000.0    # Duración de la simulación en milisegundos.
 DT_MS = 0.5             # Paso de integración en milisegundos.
 
-## 1.2) Parámetros de la entrada. En este caso un pulso.
+# 1.2) Parámetros de la entrada. En este caso un pulso.
 BASELINE_HZ = 5.0           # Frecuencia de disparo basal en Hz. Que hace esto? --
 PULSE_AMPLITUDE_HZ = 40.0   # Amplitud del pulso en Hz.
 PULSE_ONSET_MS = 500.0      # Instante de inicio del pulso en ms.
@@ -65,7 +65,7 @@ def build_pulse_input() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]
 
     pulse = (time_ms >= PULSE_ONSET_MS) & (
         time_ms < PULSE_ONSET_MS + PULSE_DURATION_MS)
-    stimulus_hz[pulse] += PULSE_AMPLITUDE_HZ
+    stimulus_hz[pulse] = PULSE_AMPLITUDE_HZ
 
     # Misma convención que el código de referencia.
     fe_ext_hz = INPUT_SCALE * stimulus_hz
