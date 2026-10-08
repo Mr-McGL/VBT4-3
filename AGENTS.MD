@@ -15,6 +15,16 @@ Estas reglas son obligatorias para cualquier agente que trabaje en este reposito
 - Keep existing development notes in their original language unless the user explicitly asks to translate them.
 - Treat TODO comments in source code as pending notes. Do not implement, remove, or rewrite a TODO until the user explicitly asks to address it.
 
+## Scope of code changes and authorial intent
+
+- Change code only when the change is necessary to implement the functionality the user requested. Make the smallest change that achieves that functionality; do not perform unrelated cleanup, refactoring, renaming, reformatting, or speculative improvements.
+- A question, a request for an explanation, or a request for a code snippet does not authorize editing project files. Provide the answer or snippet without changing the repository.
+- Treat this as teaching code with a past and a future. Preserve the user's existing structure, progression, examples, and notes about previous or possible future approaches.
+- Do not edit, delete, move, translate, or reformat comments written by the user or code the user has commented out. Keep them exactly as they are, even when they are outside the currently executed path.
+- Preserve the user's coding style, including naming, formatting, organization, and presentation. Follow that style when adding necessary code.
+- Code or comments introduced by other AI agents may be changed when necessary for the requested functionality; this does not authorize changes to surrounding user-authored material.
+- If authorship is unclear, or it is unclear whether a change is necessary or would affect protected user material, ask the user before making that change.
+
 ## Código de referencia: `0.sample_code/sinovia`
 
 - `0.sample_code/sinovia` contiene código de referencia, no la implementación editable de este proyecto.
