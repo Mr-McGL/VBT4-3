@@ -24,7 +24,9 @@ from tvb.basic.neotraits.api import List, NArray
 from tvb.simulator.simulator import Simulator
 
 
-class InputParameterSimulator(Simulator):
+# ToDo: Escoger nombre. DynamicParameterSimulator, ParameterStimulationSimulator,
+#       TimeVaryingParameterSimulator
+class DynamicParameterSimulator(Simulator):
     """Apply time varying parameter values to regions or nodes."""
 
     input_parameters = List(
