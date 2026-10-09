@@ -10,6 +10,7 @@ dependencies:
   - jupyterlab=4
   - ipykernel=6
   - python-dotenv
+  - json5
   - rich
   - pip
   - pip:
