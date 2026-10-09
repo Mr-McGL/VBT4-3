@@ -1,10 +1,12 @@
-# Estructura del proyecto
+# Project structure
 
-## Finalidad
+## Purpose
 
-Este fichero describe la estructura vigente del proyecto. Debe leerse antes de crear, mover, modificar o eliminar cualquier fichero o carpeta. Si un cambio altera la estructura, las responsabilidades o los puntos de entrada descritos aquí, este documento debe actualizarse en el mismo cambio.
+This file describes the current repository layout. Read it before creating,
+moving, modifying, or deleting project files. Update it whenever those changes
+make the layout or responsibilities below inaccurate.
 
-## Árbol actual
+## Current tree
 
 ```text
 tvb_test/
@@ -13,81 +15,59 @@ tvb_test/
 ├── STRUCTURE.MD
 ├── VBT_4-3.MD
 ├── .gitignore
-├── .env_default             # Tracked defaults for working and results directories
-├── .env                     # Local path overrides; ignored by Git
-├── .prompts/                 # Área reservada; prohibido leerla o modificarla
-├── .vscode/
-│   └── settings.json         # Configuración local del editor y de micromamba
-├── 0.sample_code/            # Código externo de referencia; solo lectura
-│   └── sinovia/
-│       ├── README.md
-│       └── Code/
-│           ├── evaluate_raw_zerlaut_inverse.py
-│           ├── make_final_11dWi_datasets.py
-│           ├── make_zerlaut_inverse_dataset.py
-│           ├── make_zerlaut_inverse_dataset_multiprotocol.py
-│           ├── run_final_11dWi_select_refine.py
-│           ├── run_final_11dWi_train_eval.py
-│           ├── run_full_final_11dWi_workflow.sh
-│           ├── train_transformer_raw_zerlaut_inverse.py
-│           ├── zerlaut_adex_meanfield.py
-│           └── zerlaut_stimulus_protocols.py
+├── .env_default               # Tracked directory defaults
+├── .env                       # Ignored local directory overrides
+├── .prompts/                  # User-reserved area; agents must not access it
+├── .vscode/                   # Editor settings
+├── 0.sample_code/             # External reference code; read-only
 ├── conda/
-│   └── environment.yml       # Definición reproducible del entorno micromamba
+│   └── environment.yml        # Micromamba environment
 ├── config/
-│   ├── simulation.json          # Valores usados por el ejemplo
-│   └── parameter_ranges.json    # Rangos orientativos, no consumidos por el ejecutable
+│   ├── simulation.json        # Retained configuration from earlier examples
+│   └── parameter_ranges.json  # Reference parameter ranges
 ├── notebooks/
 │   └── zerlaut/
-│       ├── parameter_simulation_step_by_step.ipynb
 │       ├── simulation_step_by_step.ipynb
-│       └── visualize_simulation.ipynb
-├── src/
-│   └── zerlaut/
-│       ├── parameter_simulator.py   # Simulator con parámetros temporales por región o superficie
-│       ├── parameter_simulator_back.py # Copia de la versión anterior, solo por regiones
-│       ├── run_simulation.py        # Ejemplo configurable mediante JSON
-│       ├── run_simulation_simple.py # Ejemplo didáctico con entradas hardcodeadas
-│       ├── run_simulation_heun.py   # Mismo pulso con HeunDeterministic paso a paso
-│       ├── run_simulation_parameter.py # Ejemplo de cuatro entradas temporales
-│       └── run_simulation_tvb.py    # Simulación completa con Simulator y monitor Raw
-└── results/                   # Salidas NPZ generadas; ignoradas por Git
+│       └── simulation_step_by_step_modular.ipynb
+├── scripts/                   # Future executable scripts: <topic>/<name>.py
+├── src/                       # Directly imported helpers; no build metadata
+│   ├── __init__.py
+│   ├── environment.py          # Resolve working and results directories
+│   └── tvb/
+│       ├── __init__.py
+│       ├── stimulus.py         # Pulse and pulse-train arrays
+│       ├── components.py       # Model and integrator builders
+│       ├── simulator.py        # Dynamic parameters and single-region simulator
+│       ├── results.py          # Result metadata and NPZ persistence
+│       └── plotting.py         # Result plots
+└── results/                   # Generated NPZ files; ignored by Git
 ```
 
-## Responsabilidad de cada elemento raíz
+## Responsibilities and relationships
 
-- `AGENTS.MD`: instrucciones obligatorias para los agentes que trabajen en este repositorio.
-- `README.md`: instrucciones para crear el entorno, ejecutar la simulación y abrir el cuaderno.
-- `STRUCTURE.MD`: mapa de la estructura actual y contrato para mantenerla documentada.
-- `VBT_4-3.MD`: índice funcional detallado del código de referencia `0.sample_code/sinovia`.
-- `.gitignore`: excluye del repositorio principal la carpeta de referencia, el área reservada `.prompts` y las variables locales `.env`.
-- `.env_default`: valores versionados de las rutas del directorio de trabajo y de resultados; no contiene parámetros de simulación.
-- `.env`: ajustes locales opcionales de esas rutas que sobrescriben `.env_default`; ignorado por Git.
-- `.prompts/`: contenido reservado al usuario. Los agentes no deben leer, listar, buscar ni modificar esta carpeta.
-- `.vscode/`: configuración local del editor, incluido el uso de micromamba como gestor de entornos.
-- `0.sample_code/`: código externo de referencia ignorado por Git y de solo lectura; el proyecto consultado está en `sinovia/`.
-- `conda/`: definición del entorno micromamba, incluido `python-dotenv`; `tvb-library` se instala después mediante `pip`.
-- `config/`: configuración JSON activa y catálogo independiente de rangos admisibles/orientativos.
-- `notebooks/zerlaut/`: cuadernos Jupyter para visualizar resultados y recorrer paso a paso tanto la versión didáctica como la simulación con cuatro parámetros temporales.
-- `src/zerlaut/`: implementación propia; `parameter_simulator.py` define `InputParameterSimulator` para varios parámetros temporales, `parameter_simulator_back.py` conserva la versión anterior limitada a regiones y `run_simulation.py` acepta configuración JSON, `run_simulation_simple.py` agrupa entradas hardcodeadas, `run_simulation_heun.py` integra paso a paso con `HeunDeterministic`, `run_simulation_tvb.py` usa `Simulator` y `Raw`, y `run_simulation_parameter.py` usa `InputParameterSimulator` para actualizar cuatro entradas en cada paso.
-- `results/`: directorio generado durante la ejecución. Sus NPZ no se versionan y no deben editarse manualmente.
+- `AGENTS.MD` contains mandatory repository instructions for agents.
+- `README.md` explains how to prepare the environment and run the notebooks.
+- `VBT_4-3.MD` indexes the external reference code in `0.sample_code/sinovia`.
+- `0.sample_code/` is external reference material and must not be modified.
+- `.prompts/` is reserved for the user and must not be accessed by agents.
+- `.env_default` contains tracked path defaults. The ignored `.env` may override them locally. Neither file contains simulation or model values.
+- `conda/environment.yml` defines the Python environment, including `python-dotenv`, `json5`, and TVB.
+- `config/` retains configuration files from the earlier script layout; neither current notebook reads them.
+- `notebooks/zerlaut/simulation_step_by_step.ipynb` is the original, self-contained teaching notebook.
+- `notebooks/zerlaut/simulation_step_by_step_modular.ipynb` preserves the same simulation workflow and values while importing helper definitions from `src/`.
+- `scripts/` is the destination for new executable Python scripts. It currently has no files.
+- `src/` contains reusable helpers imported directly from the checkout. It is not an installable distribution. The `src.tvb` namespace keeps project helpers separate from the installed `tvb` library.
+- `results/` contains generated outputs; its contents are ignored by Git.
 
-## Estado funcional del proyecto
+The modular notebook reads the root dotenv files, adds the repository root to
+`sys.path`, and imports `src.environment` and `src.tvb.*`. The notebook keeps
+simulation parameters and execution steps in its cells. The extracted helper
+functions do not depend on notebook-defined global values.
 
-La implementación propia contiene cinco ejemplos ejecutables para una única región con el modelo `ZerlautAdaptationFirstOrder`: uno configurable mediante `config/simulation.json`, otro autocontenido con entradas hardcodeadas, uno con `HeunDeterministic` paso a paso, otro con `Simulator` y `Raw` de TVB, y un ejemplo de cuatro entradas temporales con `InputParameterSimulator`. Producen `results/simulation.npz`, `results/simple_simulation.npz`, `results/tvb_simulation.npz`, `results/tvb_full_simulation.npz` y `results/parameter_simulation.npz`. El cuaderno `parameter_simulation_step_by_step.ipynb` incluye la lógica y todos los parámetros de simulación en sus propias celdas; usa `.env_default` y `.env` solo para localizar los directorios de trabajo y resultados, guarda `parameter_simulation_notebook.npz` en el directorio de resultados y muestra los resultados al final. El cuaderno de visualización puede superponer uno o varios ficheros de resultados.
+## Maintenance rules
 
-Cuando se añada una implementación propia, deberá situarse fuera de `0.sample_code` y quedar descrita aquí, indicando como mínimo:
-
-- finalidad de cada directorio de primer nivel;
-- puntos de entrada y módulos principales;
-- ubicación de pruebas, configuración, datos y resultados;
-- relaciones importantes entre componentes;
-- elementos generados que no deban editarse manualmente.
-
-## Reglas para mantener este mapa
-
-1. Leer `STRUCTURE.MD` antes de modificar la estructura o los ficheros del proyecto.
-2. No usar `0.sample_code` como destino de código nuevo ni modificar nada en su interior.
-3. No acceder a `.prompts` bajo ninguna circunstancia.
-4. Actualizar este fichero en el mismo cambio que añada, elimine, mueva o cambie sustancialmente la función de un elemento documentado.
-5. Mantener el árbol conciso: deben figurar los ficheros mantenidos por el proyecto, no cachés ni artefactos temporales.
+1. Read this file before modifying the repository structure or project files.
+2. Do not write project code inside `0.sample_code/`.
+3. Do not access `.prompts/`.
+4. Update this file in the same change that alters a documented path or responsibility.
+5. Keep the tree focused on maintained project files, not caches or temporary artifacts.

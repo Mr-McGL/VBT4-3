@@ -46,8 +46,14 @@ Estas reglas son obligatorias para cualquier agente que trabaje en este reposito
 - Keep only execution-environment settings, such as working and results directories, in the tracked root `.env_default` file. Do not put simulation, model, stimulus, or output filename values in dotenv files.
 - Put local overrides in the root `.env` file. Keep `.env` ignored by Git and never commit its contents.
 - Load `.env_default` first, then let `.env` override it. Document any new environment variable in `.env_default` when adding it. Resolve a relative working directory from the dotenv files' directory, and a relative results directory from the working directory; accept absolute paths for both.
-- Teaching notebooks must contain the simulation logic they explain. They may import third-party packages and Python standard-library modules, but must not import project modules or functions from `src/` or other notebooks. Repeat the necessary code in the notebook so each step can be read and run independently of project source imports.
+- The original teaching notebook `notebooks/zerlaut/simulation_step_by_step.ipynb` keeps its simulation logic in the notebook. Its modular copy, `simulation_step_by_step_modular.ipynb`, imports auxiliary functions and classes from `src/` while retaining the simulation steps and values in the notebook.
 - Define simulation and model values explicitly in teaching notebooks so readers can see and edit them alongside the steps they control.
+
+## Repository code layout
+
+- Put executable Python scripts under `scripts/<topic>/<script_name>.py`.
+- Put reusable helper functions and classes under `src/`; group TVB-specific helpers under `src/tvb/`.
+- This repository does not define an installable Python distribution. Use the root dotenv files to locate the repository, then add that root to `sys.path` before importing `src` modules from a notebook or script.
 
 ## Directorio protegido `.prompts`
 

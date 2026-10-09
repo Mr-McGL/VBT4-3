@@ -1,142 +1,53 @@
-# Ejemplo TVB de una sola región
+# Single-region TVB simulation
 
-Este proyecto ejecuta una simulación de una única región con el modelo de campo
-medio `ZerlautAdaptationFirstOrder` de TVB. La configuración completa se lee de
-JSON y el resultado se guarda como un fichero binario NumPy `.npz`, que puede
-abrirse sin una base de datos ni el framework web de TVB.
+This repository contains a step-by-step notebook for a single-region simulation
+with TVB's Zerlaut adaptation models. The notebook keeps its model parameters,
+stimulus values, simulation steps, and result handling visible in its cells.
 
-El ejemplo sigue las convenciones del código de referencia:
+## Environment
 
-- las tasas y entradas externas del JSON están expresadas en Hz;
-- `Fe_ext(t) = scale * stimulus(t)`;
-- `Fi_ext(t) = Fi_ratio * Fe_ext(t)`;
-- el tiempo está expresado en ms;
-- las tasas internas de TVB, expresadas en kHz, se convierten a Hz al guardar.
-
-## Preparación del entorno
+Create and activate the environment from the repository root:
 
 ```bash
 micromamba create -f conda/environment.yml
 micromamba activate tvb
-python -m pip install tvb-library==2.10.0
 ```
 
-## Ejecución
+The environment includes `python-dotenv`, `json5`, and `tvb-library`. Launch
+Jupyter from the repository root:
 
 ```bash
-python src/zerlaut/run_simulation.py --config config/simulation.json
+jupyter lab notebooks/zerlaut/simulation_step_by_step.ipynb
 ```
 
-El resultado se guarda en `results/simulation.npz`. Puede cambiarse la ruta
-sin editar el JSON:
+The original notebook is self-contained. To run the copy that imports auxiliary
+code from `src/`, open:
 
 ```bash
-python src/zerlaut/run_simulation.py \
-  --config config/simulation.json \
-  --output results/otra_simulacion.npz
+jupyter lab notebooks/zerlaut/simulation_step_by_step_modular.ipynb
 ```
 
-El `.npz` contiene `time_ms`, `E_hz`, `I_hz`, `W_e_pA`, `W_i_pA`,
-`stimulus_hz`, `Fe_ext_hz`, `Fi_ext_hz` y `metadata_json`. Se carga con
-`numpy.load`; no necesita `pickle`.
+The modular notebook first reads `.env_default` with `python-dotenv`, then lets
+the ignored local `.env` override it. It uses the location of `.env_default` to
+make the repository's `src` modules importable. Run its cells in order.
+`TVB_WORK_DIR` is resolved relative to the repository root, and
+`TVB_RESULTS_DIR` is resolved relative to `TVB_WORK_DIR`. Either may be an
+absolute path. Simulation and model values remain in the notebook.
 
-Las unidades de las series son:
+## Layout
 
-- `time_ms`: milisegundos (ms).
-- `E_hz`, `I_hz`, `stimulus_hz`, `Fe_ext_hz` y `Fi_ext_hz`: hercios (Hz).
-- `W_e_pA` y `W_i_pA`: picoamperios (pA).
+- `notebooks/zerlaut/simulation_step_by_step.ipynb`: original teaching notebook.
+- `notebooks/zerlaut/simulation_step_by_step_modular.ipynb`: the same workflow with auxiliary definitions imported from `src/`.
+- `src/environment.py`: directory resolution.
+- `src/tvb/stimulus.py`: pulse and pulse-train construction.
+- `src/tvb/components.py`: TVB model and integrator construction.
+- `src/tvb/simulator.py`: time-varying parameter simulator and single-region setup.
+- `src/tvb/results.py`: result metadata and NPZ save/load functions.
+- `src/tvb/plotting.py`: result plots.
+- `scripts/<topic>/<script_name>.py`: location for future executable scripts; there are currently no scripts.
+- `config/`: retained JSON configurations and parameter ranges from earlier examples.
+- `results/`: generated outputs, ignored by Git.
 
-### Versión didáctica sin JSON
-
-`src/zerlaut/run_simulation_simple.py` contiene las entradas como constantes al
-principio del fichero y sólo implementa un pulso, una región y el integrador de
-Heun. No lee configuración ni datos externos:
-
-```bash
-python src/zerlaut/run_simulation_simple.py
-```
-
-El resultado es `results/simple_simulation.npz`. El cuaderno
-`notebooks/zerlaut/simulation_step_by_step.ipynb` reconstruye el mismo proceso en
-etapas comentadas.
-
-La variante `run_simulation_heun.py` conserva la integración paso a paso
-con `HeunDeterministic` de TVB:
-
-```bash
-python src/zerlaut/run_simulation_heun.py
-```
-
-El resultado es `results/tvb_simulation.npz`.
-
-La simulación completa con `Simulator` y el monitor `Raw` está en otro script.
-TVB realiza la integración y registra las cinco variables:
-
-```bash
-python src/zerlaut/run_simulation_tvb.py
-```
-
-El resultado es `results/tvb_full_simulation.npz`.
-
-Para cambiar varios parámetros del modelo antes de cada paso con
-`InputParameterSimulator`:
-
-```bash
-python src/zerlaut/run_simulation_parameter.py
-```
-
-`input_parameters` es una lista de pares `(nombre, fuente)`. Cada fuente puede
-ser un array de forma `(pasos, regiones)` o `(pasos, 1)`, una función `f(t_ms)`
-que devuelva un único valor para todas las regiones, o una lista de funciones
-escalares con una función por región. Los parámetros constantes se fijan
-directamente en el modelo. El ejemplo combina arrays y funciones para las
-cuatro entradas externas de Zerlaut
-y guarda `results/parameter_simulation.npz`. El valor se fija al inicio de
-cada paso y se mantiene durante las dos etapas de Heun. En simulaciones de
-superficie, los valores regionales se asignan a los nodos con `region_mapping`.
-
-Surface simulations also accept arrays of shape `(steps, nodes)` or one
-function per node. These values are applied directly to the nodes.
-
-Esta subclase usa el bucle de referencia de TVB en CPU. La ejecución en GPU
-necesita que el backend GPU lea las mismas series de valores.
-
-The step-by-step parameter notebook reads local directory settings from `.env`,
-which is ignored by Git. See `.env_default` for the available settings and their
-defaults. Simulation parameters are defined in the notebook itself.
-
-## Configuración
-
-- `config/simulation.json`: valores utilizados por el ejemplo, incluido el
-  tipo de estímulo.
-- `config/parameter_ranges.json`: rangos orientativos inspirados en el proyecto
-  de referencia. Es documentación legible por máquinas y el ejecutable no lo
-  consume.
-
-Los tipos de estímulo admitidos son `constant`, `step`, `pulse`, `slow_ramp`,
-`double_pulse`, `recovery`, `sine` y `ou_like`. Los campos que no necesita un
-tipo concreto pueden permanecer en el JSON y se ignoran.
-
-## Visualización
-
-Después de ejecutar la simulación:
-
-```bash
-jupyter lab notebooks/zerlaut/visualize_simulation.ipynb
-```
-
-Ejecute este comando desde la raíz del repositorio para que el cuaderno localice
-los resultados. La lista `RESULT_FILES` permite mostrar uno o varios ficheros
-en las mismas gráficas.
-
-## Conectividad y ficheros externos
-
-Ninguno de los tres scripts carga un fichero de conectividad. Al haber una sola
-región, se pasa al modelo un tensor de acoplamiento lleno de ceros con forma
-`(1, 1, 1)`.
-
-El ejemplo configurable sólo lee `config/simulation.json`. El fichero
-`config/parameter_ranges.json` sirve como documentación y no se abre durante
-la simulación. La versión didáctica no lee ningún fichero del proyecto; su única
-dependencia externa es el módulo Python de TVB, que se instala por separado
-después de crear el entorno definido en `conda/environment.yml`.
+The code under `src/` is imported directly from the checkout and is not an
+installable distribution. Its `src.tvb` import path distinguishes these helpers
+from the installed `tvb` library.
