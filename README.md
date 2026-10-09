@@ -28,8 +28,10 @@ jupyter lab notebooks/zerlaut/simulation_step_by_step_modular.ipynb
 ```
 
 The modular notebook first reads `.env_default` with `python-dotenv`, then lets
-the ignored local `.env` override it. It uses the location of `.env_default` to
-make the repository's `src` modules importable. Run its cells in order.
+the ignored local `.env` override it. `TVB_IMPORT_DIR` points to the directory
+containing `src/`; relative values are resolved from the location of
+`.env_default`. If the variable is absent or empty, the notebook uses that
+location directly. Run its cells in order.
 `TVB_WORK_DIR` is resolved relative to the repository root, and
 `TVB_RESULTS_DIR` is resolved relative to `TVB_WORK_DIR`. Either may be an
 absolute path. Simulation and model values remain in the notebook.

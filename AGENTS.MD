@@ -53,7 +53,7 @@ Estas reglas son obligatorias para cualquier agente que trabaje en este reposito
 
 - Put executable Python scripts under `scripts/<topic>/<script_name>.py`.
 - Put reusable helper functions and classes under `src/`; group TVB-specific helpers under `src/tvb/`.
-- This repository does not define an installable Python distribution. Use the root dotenv files to locate the repository, then add that root to `sys.path` before importing `src` modules from a notebook or script.
+- This repository does not define an installable Python distribution. Use the root dotenv files to locate `TVB_IMPORT_DIR`, then add that directory to `sys.path` before importing `src` modules from a notebook or script. If unset, use the dotenv files' directory.
 
 ## Directorio protegido `.prompts`
 
