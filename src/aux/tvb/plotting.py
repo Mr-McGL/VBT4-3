@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from src.tvb.stimulus import build_stimulus
+from aux.tvb.stimulus import build_stimulus
 
 
 def plot_results(times, states, metadata, show_stimulus=True, ax=None, plot_states=None):
