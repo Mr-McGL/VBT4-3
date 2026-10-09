@@ -64,7 +64,7 @@ def save_single_region_simulation(
     )
 
 
-def load_results(path):
+def load_single_region_simulation(path):
     with np.load(path, allow_pickle=False) as saved:
         data = json.loads(saved["metadata_json"].item())
         metadata = ResultMetadata(

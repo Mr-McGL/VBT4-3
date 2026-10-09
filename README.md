@@ -24,7 +24,7 @@ The original notebook is self-contained. To run the copy that imports auxiliary
 code from `src/`, open:
 
 ```bash
-jupyter lab notebooks/zerlaut/simulation_step_by_step_modular.ipynb
+jupyter lab notebooks/zerlaut/simulation_step_by_step_funcs.ipynb
 ```
 
 The modular notebook first reads `.env_default` with `python-dotenv`, then lets
@@ -39,10 +39,11 @@ absolute path. Simulation and model values remain in the notebook.
 ## Layout
 
 - `notebooks/zerlaut/simulation_step_by_step.ipynb`: original teaching notebook.
-- `notebooks/zerlaut/simulation_step_by_step_modular.ipynb`: the same workflow with auxiliary definitions imported from `src/`.
+- `notebooks/zerlaut/simulation_step_by_step_funcs.ipynb`: the same workflow with auxiliary definitions imported from `src/`.
 - `src/environment.py`: directory resolution.
 - `src/tvb/stimulus.py`: pulse and pulse-train construction.
-- `src/tvb/components.py`: TVB model and integrator construction.
+- `src/tvb/model.py`: TVB model construction.
+- `src/tvb/integrator.py`: TVB integrator and noise construction.
 - `src/tvb/simulator.py`: time-varying parameter simulator and single-region setup.
 - `src/tvb/results.py`: result metadata and NPZ save/load functions.
 - `src/tvb/plotting.py`: result plots.

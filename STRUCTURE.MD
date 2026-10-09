@@ -28,7 +28,7 @@ tvb_test/
 ├── notebooks/
 │   └── zerlaut/
 │       ├── simulation_step_by_step.ipynb
-│       └── simulation_step_by_step_modular.ipynb
+│       └── simulation_step_by_step_funcs.ipynb
 ├── scripts/                   # Future executable scripts: <topic>/<name>.py
 ├── src/                       # Directly imported helpers; no build metadata
 │   ├── __init__.py
@@ -36,7 +36,8 @@ tvb_test/
 │   └── tvb/
 │       ├── __init__.py
 │       ├── stimulus.py         # Pulse and pulse-train arrays
-│       ├── components.py       # Model and integrator builders
+│       ├── model.py            # Model builder
+│       ├── integrator.py       # Integrator and noise builder
 │       ├── simulator.py        # Dynamic parameters and single-region simulator
 │       ├── results.py          # Result metadata and NPZ persistence
 │       └── plotting.py         # Result plots
@@ -54,7 +55,7 @@ tvb_test/
 - `conda/environment.yml` defines the Python environment, including `python-dotenv`, `json5`, and TVB.
 - `config/` retains configuration files from the earlier script layout; neither current notebook reads them.
 - `notebooks/zerlaut/simulation_step_by_step.ipynb` is the original, self-contained teaching notebook.
-- `notebooks/zerlaut/simulation_step_by_step_modular.ipynb` preserves the same simulation workflow and values while importing helper definitions from `src/`.
+- `notebooks/zerlaut/simulation_step_by_step_funcs.ipynb` preserves the same simulation workflow and values while importing helper definitions from `src/`.
 - `scripts/` is the destination for new executable Python scripts. It currently has no files.
 - `src/` contains reusable helpers imported directly from the checkout. It is not an installable distribution. The `src.tvb` namespace keeps project helpers separate from the installed `tvb` library.
 - `results/` contains generated outputs; its contents are ignored by Git.

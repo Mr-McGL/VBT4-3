@@ -46,7 +46,7 @@ Estas reglas son obligatorias para cualquier agente que trabaje en este reposito
 - Keep only execution-environment settings, such as working and results directories, in the tracked root `.env_default` file. Do not put simulation, model, stimulus, or output filename values in dotenv files.
 - Put local overrides in the root `.env` file. Keep `.env` ignored by Git and never commit its contents.
 - Load `.env_default` first, then let `.env` override it. Document any new environment variable in `.env_default` when adding it. Resolve a relative working directory from the dotenv files' directory, and a relative results directory from the working directory; accept absolute paths for both.
-- The original teaching notebook `notebooks/zerlaut/simulation_step_by_step.ipynb` keeps its simulation logic in the notebook. Its modular copy, `simulation_step_by_step_modular.ipynb`, imports auxiliary functions and classes from `src/` while retaining the simulation steps and values in the notebook.
+- The original teaching notebook `notebooks/zerlaut/simulation_step_by_step.ipynb` keeps its simulation logic in the notebook. Its modular copy, `simulation_step_by_step_funcs.ipynb`, imports auxiliary functions and classes from `src/` while retaining the simulation steps and values in the notebook.
 - Define simulation and model values explicitly in teaching notebooks so readers can see and edit them alongside the steps they control.
 
 ## Repository code layout
