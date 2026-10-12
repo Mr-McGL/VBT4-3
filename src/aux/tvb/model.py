@@ -12,7 +12,8 @@ def build_model(parameters, integer_parameters,
 
     for name, value in parameters.items():
         dtype = np.int64 if name in integer_parameters else np.float64
-        setattr(model, name, np.array([value], dtype=dtype))
+        # Permite parametros escalares o vectores, 
+        setattr(model, name, np.atleast_1d(np.asarray(value, dtype=dtype)))
 
     # Esto se usa para el monitor Raw que se utiliza para guardar la salida de la simulación.
     # Por defecto solo se guarda E.
