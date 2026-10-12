@@ -14,6 +14,9 @@ dependencies:
   - python-dotenv
   - json5
   - pandas
+  #- itables
+  #- ipydatagrid
+  - ipyaggrid
   - rich
   - pip
   - pip:
