@@ -40,6 +40,8 @@ tvb_test/
 │   └── aux/
 │       ├── __init__.py
 │       ├── environment.py      # Resolve working and results directories
+│       ├── parameters.py       # Parameter reshaping and sampling configuration
+│       ├── sampling.py         # Sobol and distribution sampling helpers
 │       └── tvb/
 │           ├── __init__.py
 │           ├── stimulus.py     # Pulse and pulse-train arrays
@@ -70,6 +72,8 @@ tvb_test/
 - `notebooks/zerlaut/02_sampling_test.ipynb` and `99a_simulation_configuration.ipynb` contain additional Zerlaut experiments.
 - `scripts/` is the destination for new executable Python scripts. It currently has no files.
 - `src/aux/` contains reusable helpers imported directly from the checkout. It is not an installable distribution. The `aux.tvb` namespace keeps project helpers separate from the installed `tvb` library.
+- `src/aux/parameters.py` contains parameter reshaping and sampling configuration helpers copied from notebook 02.
+- `src/aux/sampling.py` contains Sobol, distribution, and sample-weight helpers copied from notebook 02. Notebook 02 keeps using its local definitions.
 - `results/` contains generated outputs; its contents are ignored by Git.
 
 The modular notebooks read the root dotenv files, add the configured import
