@@ -13,6 +13,7 @@ dependencies:
   - ipykernel=6
   - python-dotenv
   - json5
+  - pandas
   - rich
   - pip
   - pip:
