@@ -5,6 +5,7 @@ dependencies:
   #- python=3.13
   - python=3.11
   - numpy=1.26
+  - pandas
   - scipy
   - scikit-learn
   - matplotlib=3.9
