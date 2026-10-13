@@ -68,7 +68,7 @@ tvb_test/
 - `notebooks/zerlaut/01c_simulation_one_region.ipynb` compares external stimulation signals.
 - `notebooks/zerlaut/01d_simulation_two_regions.ipynb` explores signal tracking and directed coupling.
 - `notebooks/zerlaut/01e_simulation_one_region.ipynb` compares `weight_noise` and `tau_OU` under a constant baseline input.
-- `notebooks/zerlaut/03_parameter_exploration.ipynb` groups Zerlaut defaults, counts parameters, and explores ranges in notebook cells.
+- `notebooks/zerlaut/03_parameter_exploration.ipynb` groups Zerlaut defaults, counts parameters, explores ranges, and runs a noise-parameter simulation grid.
 - `notebooks/zerlaut/02_sampling_test.ipynb` and `99a_simulation_configuration.ipynb` contain additional Zerlaut experiments.
 - `scripts/` is the destination for new executable Python scripts. It currently has no files.
 - `src/aux/` contains reusable helpers imported directly from the checkout. It is not an installable distribution. The `aux.tvb` namespace keeps project helpers separate from the installed `tvb` library.
