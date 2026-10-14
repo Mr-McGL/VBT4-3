@@ -68,7 +68,7 @@ tvb_test/
 - `notebooks/zerlaut/01c_simulation_one_region.ipynb` compares external stimulation signals.
 - `notebooks/zerlaut/01d_simulation_two_regions.ipynb` explores signal tracking and directed coupling.
 - `notebooks/zerlaut/01e_simulation_one_region.ipynb` compares `weight_noise` and `tau_OU` under a constant baseline input.
-- `notebooks/zerlaut/03_parameter_exploration.ipynb` groups Zerlaut defaults, counts parameters, explores ranges, and runs a noise-parameter simulation grid.
+- `notebooks/zerlaut/03_parameter_exploration.ipynb` groups Zerlaut defaults, counts parameters, explores ranges, and runs simulation grids for each parameter group. Its additional `ou_drift` analysis belongs only to Noise.
 - `notebooks/zerlaut/02_sampling_test.ipynb` and `99a_simulation_configuration.ipynb` contain additional Zerlaut experiments.
 - `scripts/` is the destination for new executable Python scripts. It currently has no files.
 - `src/aux/` contains reusable helpers imported directly from the checkout. It is not an installable distribution. The `aux.tvb` namespace keeps project helpers separate from the installed `tvb` library.
@@ -80,6 +80,10 @@ The modular notebooks read the root dotenv files, add the configured import
 directory to `sys.path`, and import `aux.environment` and `aux.tvb.*`. They keep
 simulation parameters and execution steps in their cells. The extracted helper
 functions do not depend on notebook-defined global values.
+
+Parameter configuration and sampling fields use lowercase keys (`min`, `max`,
+`default`, `std`, `method`, `lambda`). TVB parameter and state names keep their
+original spelling, including `g_L`, `P_e`, and `E`.
 
 ## Maintenance rules
 

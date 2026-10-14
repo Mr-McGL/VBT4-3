@@ -30,8 +30,8 @@ def add_truncnorm_config(params, std_factor=0.2):
     result =deepcopy(params)
 
     for name in result.keys():
-        result[name]["STD"]= (result[name]["MAX"] - result[name]["MIN"]) * std_factor
-        result[name]["METHOD"] = "truncnorm"
+        result[name]["std"]= (result[name]["max"] - result[name]["min"]) * std_factor
+        result[name]["method"] = "truncnorm"
 
     return result
 
@@ -39,7 +39,7 @@ def add_beta_config(params, lambda_):
     result =deepcopy(params)
 
     for name in result.keys():
-        result[name]["LAMBDA"] = lambda_
-        result[name]["METHOD"] = "beta"
+        result[name]["lambda"] = lambda_
+        result[name]["method"] = "beta"
 
     return result

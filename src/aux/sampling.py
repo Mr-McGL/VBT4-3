@@ -33,17 +33,17 @@ def _beta_sample(s, minimum, maximum, peak, lam):
     return (value := dist.ppf(s)), dist.pdf(value)
 
 def _sample_from_pdf(s, param):
-    minimum = param["MIN"]
-    maximum = param["MAX"]
+    minimum = param["min"]
+    maximum = param["max"]
 
-    match param.get("METHOD", "uniform"):
+    match param.get("method", "uniform"):
         case "truncnorm":
             return _truncnorm_sample(
-                s, minimum, maximum, param["DEFAULT"], param["STD"]
+                s, minimum, maximum, param["default"], param["std"]
             )
         case "beta":
             return _beta_sample(
-                s, minimum, maximum, param["DEFAULT"], param["LAMBDA"]
+                s, minimum, maximum, param["default"], param["lambda"]
             )
         case _:
             return _uniform_sample(s, minimum, maximum)
