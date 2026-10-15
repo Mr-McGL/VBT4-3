@@ -97,3 +97,10 @@ def expand_bounds(params, names=None, margin=0.10):
         config["max"] = _adjust_value(config["max"], margin, 1)
 
     return result
+
+
+def filter_nested_dict(data: dict, keys: list[str]) -> dict:
+    return {
+        name: {key: value for key, value in params.items() if key in keys}
+        for name, params in data.items()
+    }
