@@ -24,43 +24,43 @@
   // ============================================
 
   // Electrophysiological
-  "g_L": { "default": 10.0, "table": 10.0, "min": 0.1, "max": 100.0, "step": 0.1, "unit": "nS", "doc": "Leak conductance" },
-  "E_L_e": { "default": -65.0, "table": -60.0, "min": -90.0, "max": -60.0, "step": 0.1, "unit": "mV", "doc": "Leak reversal potential for excitatory neurons" },
-  "E_L_i": { "default": -65.0, "table": -65.0, "min": -90.0, "max": -60.0, "step": 0.1, "unit": "mV", "doc": "Leak reversal potential for inhibitory neurons" },
-  "C_m": { "default": 200.0, "table": 200.0, "min": 10.0, "max": 500.0, "step": 10.0, "unit": "pF", "doc": "Membrane capacitance" },
+  "g_L": { "default": 10.0, "min": 0.1, "max": 100.0, "step": 0.1, "unit": "nS", "doc": "Leak conductance" },
+  "E_L_e": { "default": -65.0, "min": -90.0, "max": -60.0, "step": 0.1, "unit": "mV", "doc": "Leak reversal potential for excitatory neurons" },
+  "E_L_i": { "default": -65.0, "min": -90.0, "max": -60.0, "step": 0.1, "unit": "mV", "doc": "Leak reversal potential for inhibitory neurons" },
+  "C_m": { "default": 200.0, "min": 10.0, "max": 500.0, "step": 10.0, "unit": "pF", "doc": "Membrane capacitance" },
 
   // Adaptation
-  "b_e": { "default": 60.0, "table": 60.0, "min": 0.0, "max": 150.0, "step": 1.0, "unit": "pA", "doc": "Excitatory adaptation current increment" },
-  "b_i": { "default": 0.0, "table": 0.0, "min": 0.0, "max": 100.0, "step": 0.1, "unit": "pA", "doc": "Inhibitory adaptation current increment" },
-  "a_e": { "default": 4.0, "table": 4.0, "min": 0.0, "max": 20.0, "step": 0.1, "unit": "nS", "doc": "Excitatory adaptation conductance" },
-  "a_i": { "default": 0.0, "table": 0.0, "min": 0.0, "max": 20.0, "step": 0.1, "unit": "nS", "doc": "Inhibitory adaptation conductance" },
-  "tau_w_e": { "default": 500.0, "table": 500.0, "min": 1.0, "max": 1000.0, "step": 1.0, "unit": "ms", "doc": "Adaptation time constant of excitatory neurons" },
-  "tau_w_i": { "default": 1.0, "table": 0.0, "min": 1.0, "max": 1000.0, "step": 1.0, "unit": "ms", "doc": "Adaptation time constant of inhibitory neurons" },
+  "b_e": { "default": 60.0, "min": 0.0, "max": 150.0, "step": 1.0, "unit": "pA", "doc": "Excitatory adaptation current increment" },
+  "b_i": { "default": 0.0, "min": 0.0, "max": 100.0, "step": 0.1, "unit": "pA", "doc": "Inhibitory adaptation current increment" },
+  "a_e": { "default": 4.0, "min": 0.0, "max": 20.0, "step": 0.1, "unit": "nS", "doc": "Excitatory adaptation conductance" },
+  "a_i": { "default": 0.0, "min": 0.0, "max": 20.0, "step": 0.1, "unit": "nS", "doc": "Inhibitory adaptation conductance" },
+  "tau_w_e": { "default": 500.0, "min": 1.0, "max": 1000.0, "step": 1.0, "unit": "ms", "doc": "Adaptation time constant of excitatory neurons" },
+  "tau_w_i": { "default": 1.0, "min": 1.0, "max": 1000.0, "step": 1.0, "unit": "ms", "doc": "Adaptation time constant of inhibitory neurons" },
 
   // Time scale
-  "T": { "default": 20.0, "table": 20.0, "min": 1.0, "max": 20.0, "step": 0.1, "unit": "ms", "doc": "Time scale of describing network activity" },
+  "T": { "default": 20.0, "min": 1.0, "max": 20.0, "step": 0.1, "unit": "ms", "doc": "Time scale of describing network activity" },
 
   // ============================================
   // SYNAPTIC PROPERTIES
   // ============================================
 
-  "E_e": { "default": 0.0, "table": 0.0, "min": -20.0, "max": 20.0, "step": 0.01, "unit": "mV", "doc": "Excitatory reversal potential" },
-  "E_i": { "default": -80.0, "table": -80.0, "min": -100.0, "max": -60.0, "step": 1.0, "unit": "mV", "doc": "Inhibitory reversal potential" },
-  "Q_e": { "default": 1.5, "table": 1.0, "min": 0.0, "max": 5.0, "step": 0.1, "unit": "nS", "doc": "Excitatory quantal conductance" },
-  "Q_i": { "default": 5.0, "table": 5.0, "min": 0.0, "max": 10.0, "step": 0.1, "unit": "nS", "doc": "Inhibitory quantal conductance" },
-  "tau_e": { "default": 5.0, "table": 5.0, "min": 1.0, "max": 10.0, "step": 1.0, "unit": "ms", "doc": "Excitatory decay" },
-  "tau_i": { "default": 5.0, "table": 5.0, "min": 0.5, "max": 10.0, "step": 0.01, "unit": "ms", "doc": "Inhibitory decay" },
+  "E_e": { "default": 0.0, "min": -20.0, "max": 20.0, "step": 0.01, "unit": "mV", "doc": "Excitatory reversal potential" },
+  "E_i": { "default": -80.0, "min": -100.0, "max": -60.0, "step": 1.0, "unit": "mV", "doc": "Inhibitory reversal potential" },
+  "Q_e": { "default": 1.5, "min": 0.0, "max": 5.0, "step": 0.1, "unit": "nS", "doc": "Excitatory quantal conductance" },
+  "Q_i": { "default": 5.0, "min": 0.0, "max": 10.0, "step": 0.1, "unit": "nS", "doc": "Inhibitory quantal conductance" },
+  "tau_e": { "default": 5.0, "min": 1.0, "max": 10.0, "step": 1.0, "unit": "ms", "doc": "Excitatory decay" },
+  "tau_i": { "default": 5.0, "min": 0.5, "max": 10.0, "step": 0.01, "unit": "ms", "doc": "Inhibitory decay" },
 
   // ============================================
   // NUMERICAL NETWORK
   // ============================================
 
-  "N_tot": { "default": 10000, "table": 10000, "min": 1000, "max": 50000, "step": 1000, "doc": "Cell number" },
-  "p_connect_e": { "default": 0.05, "table": 0.05, "min": 0.001, "max": 0.2, "step": 0.001, "doc": "Connectivity probability" },
-  "p_connect_i": { "default": 0.05, "table": 0.05, "min": 0.001, "max": 0.2, "step": 0.001, "doc": "Connectivity probability" },
-  "g": { "default": 0.2, "table": 0.2, "min": 0.01, "max": 0.4, "step": 0.01, "doc": "Fraction of inhibitory cells" },
-  "K_ext_e": { "default": 400, "table": 400, "min": 0, "max": 10000, "step": 1, "doc": "Number of excitatory connections from external population" },
-  "K_ext_i": { "default": 0, "table": 0, "min": 0, "max": 10000, "step": 1, "doc": "Number of inhibitory connections from external population" },
+  "N_tot": { "default": 10000, "min": 1000, "max": 50000, "step": 1000, "doc": "Cell number" },
+  "p_connect_e": { "default": 0.05, "min": 0.001, "max": 0.2, "step": 0.001, "doc": "Connectivity probability" },
+  "p_connect_i": { "default": 0.05, "min": 0.001, "max": 0.2, "step": 0.001, "doc": "Connectivity probability" },
+  "g": { "default": 0.2, "min": 0.01, "max": 0.4, "step": 0.01, "doc": "Fraction of inhibitory cells" },
+  "K_ext_e": { "default": 400, "min": 0, "max": 10000, "step": 1, "doc": "Number of excitatory connections from external population" },
+  "K_ext_i": { "default": 0, "min": 0, "max": 10000, "step": 1, "doc": "Number of inhibitory connections from external population" },
 
   // ============================================
   // INHIBITORY COUPLING SCALING
@@ -85,9 +85,7 @@
        0.001265064721846073,
       -0.04072161294490446
     ],
-    "table": [
-      -4.98e-02, 5.06e-03, -2.5e-02, 1.4e-03, -4.1e-04, 1.05e-02, -3.6e-02, 7.4e-03, 1.2e-03,-4.07e-02
-    ],
+
     "doc": "Polynomial of excitatory phenomenological threshold (order 9)"
   },
 
@@ -104,9 +102,7 @@
        0.0028472190352532454,
       -0.015357804594594548
     ],
-    "table": [
-      -5.14e-02, 4.0e-03, -8.3e-03, 2.0e-04, -5.0e-04, 1.4e-03, -1.46e-02, 4.5e-03, 2.8e-03, -1.53e-02
-    ],
+
     "doc": "Polynomial of inhibitory phenomenological threshold (order 9)"
   },
 
