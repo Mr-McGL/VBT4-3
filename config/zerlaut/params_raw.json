@@ -1,77 +1,130 @@
 
+// Unidades y rangos sacados:
+// https://github.com/the-virtual-brain/tvb-root/blob/8e766d68622fa2f6b057119ac5a1cf3652ea6f89/tvb_library/tvb/simulator/models/zerlaut.py#L60
+// https://github.com/the-virtual-brain/tvb-root/blob/8e766d68622fa2f6b057119ac5a1cf3652ea6f89/tvb_library/tvb/simulator/models/zerlaut.py#L147
+// https://link.springer.com/article/10.1007/s10827-017-0668-2/tables/1
+
+// NOTA: He encontrado pequeñas discrepancias entre las entradas externas en la tabla y su uso en las ecuaciones y su inicialización.
+// El rango sugiere que las unidades son kHz.
+// Calculo de Fe sin el drive: https://github.com/the-virtual-brain/tvb-root/blob/8e766d68622fa2f6b057119ac5a1cf3652ea6f89/tvb_library/tvb/simulator/models/zerlaut.py#L307 
+// Suma de Fe y external_input sin cambio de unidades: https://github.com/the-virtual-brain/tvb-root/blob/8e766d68622fa2f6b057119ac5a1cf3652ea6f89/tvb_library/tvb/simulator/models/zerlaut.py#L429 
+// Pero la tabla dice Hz
+// https://github.com/the-virtual-brain/tvb-root/blob/8e766d68622fa2f6b057119ac5a1cf3652ea6f89/tvb_library/tvb/simulator/models/zerlaut.py#L116
+
+// Nota: discrepancias en valores por defecto:
+// Q_e: 1.0 nS en la tabla, 1.5 nS en el código # Me parace que en este caso el valor de la tabla funciona mejor.
+// Tau_w_i: 0.0 ms en la tabla, 1.0 ms en el código # Este es un error de la tabla, no puede ser cero!.
+// E_L_e: -60.0 mV en la tabla, -65.0 mV en el código
+
+// Conclusion, parace que la inicialización en código esta bien, salvo por el ruido, que no tiene sentido en el orden de los KHz.
+
 {
-  // Membrane properties
-  "g_L":     { "min": 0.1,    "max": 100.0,   "default": 10.0 },
-  "E_L_e":   { "min": -90.0,  "max": -60.0,   "default": -65.0 },
-  "E_L_i":   { "min": -90.0,  "max": -60.0,   "default": -65.0 },
-  "C_m":     { "min": 10.0,   "max": 500.0,   "default": 200.0 },
+  // ============================================
+  // CELLULAR PROPERTY
+  // ============================================
+
+  // Electrophysiological
+  "g_L": { "default": 10.0, "table": 10.0, "min": 0.1, "max": 100.0, "step": 0.1, "unit": "nS", "doc": "Leak conductance" },
+  "E_L_e": { "default": -65.0, "table": -60.0, "min": -90.0, "max": -60.0, "step": 0.1, "unit": "mV", "doc": "Leak reversal potential for excitatory neurons" },
+  "E_L_i": { "default": -65.0, "table": -65.0, "min": -90.0, "max": -60.0, "step": 0.1, "unit": "mV", "doc": "Leak reversal potential for inhibitory neurons" },
+  "C_m": { "default": 200.0, "table": 200.0, "min": 10.0, "max": 500.0, "step": 10.0, "unit": "pF", "doc": "Membrane capacitance" },
 
   // Adaptation
-  "b_e":     { "min": 0.0,    "max": 150.0,   "default": 60.0 },
-  "a_e":     { "min": 0.0,    "max": 20.0,    "default": 4.0 },
-  "b_i":     { "min": 0.0,    "max": 100.0,   "default": 0.0 },
-  "a_i":     { "min": 0.0,    "max": 20.0,    "default": 0.0 },
-  "tau_w_e": { "min": 1.0,    "max": 1000.0,  "default": 500.0 },
-  "tau_w_i": { "min": 1.0,    "max": 1000.0,  "default": 1.0 },
+  "b_e": { "default": 60.0, "table": 60.0, "min": 0.0, "max": 150.0, "step": 1.0, "unit": "pA", "doc": "Excitatory adaptation current increment" },
+  "b_i": { "default": 0.0, "table": 0.0, "min": 0.0, "max": 100.0, "step": 0.1, "unit": "pA", "doc": "Inhibitory adaptation current increment" },
+  "a_e": { "default": 4.0, "table": 4.0, "min": 0.0, "max": 20.0, "step": 0.1, "unit": "nS", "doc": "Excitatory adaptation conductance" },
+  "a_i": { "default": 0.0, "table": 0.0, "min": 0.0, "max": 20.0, "step": 0.1, "unit": "nS", "doc": "Inhibitory adaptation conductance" },
+  "tau_w_e": { "default": 500.0, "table": 500.0, "min": 1.0, "max": 1000.0, "step": 1.0, "unit": "ms", "doc": "Adaptation time constant of excitatory neurons" },
+  "tau_w_i": { "default": 1.0, "table": 0.0, "min": 1.0, "max": 1000.0, "step": 1.0, "unit": "ms", "doc": "Adaptation time constant of inhibitory neurons" },
 
-  // Synaptic properties
-  "E_e":     { "min": -20.0,  "max": 20.0,    "default": 0.0 },
-  "E_i":     { "min": -100.0, "max": -60.0,   "default": -80.0 },
-  "Q_e":     { "min": 0.0,    "max": 5.0,     "default": 1.5 },
-  "Q_i":     { "min": 0.0,    "max": 10.0,    "default": 5.0 },
-  "tau_e":   { "min": 1.0,    "max": 10.0,    "default": 5.0 },
-  "tau_i":   { "min": 0.5,    "max": 10.0,    "default": 5.0 },
+  // Time scale
+  "T": { "default": 20.0, "table": 20.0, "min": 1.0, "max": 20.0, "step": 0.1, "unit": "ms", "doc": "Time scale of describing network activity" },
 
-  // Network properties
-  "N_tot":       { "min": 1000,  "max": 50000, "default": 10000 },
-  "p_connect_e": { "min": 0.001, "max": 0.2,   "default": 0.05 },
-  "p_connect_i": { "min": 0.001, "max": 0.2,   "default": 0.05 },
-  "g":           { "min": 0.01,  "max": 0.4,   "default": 0.2 },
-  "K_ext_e":     { "min": 0,     "max": 10000, "default": 400 },
-  "K_ext_i":     { "min": 0,     "max": 10000, "default": 0 },
-  "T":           { "min": 1.0,   "max": 20.0,  "default": 20.0 },
+  // ============================================
+  // SYNAPTIC PROPERTIES
+  // ============================================
 
-  // Phenomenological threshold coefficients
+  "E_e": { "default": 0.0, "table": 0.0, "min": -20.0, "max": 20.0, "step": 0.01, "unit": "mV", "doc": "Excitatory reversal potential" },
+  "E_i": { "default": -80.0, "table": -80.0, "min": -100.0, "max": -60.0, "step": 1.0, "unit": "mV", "doc": "Inhibitory reversal potential" },
+  "Q_e": { "default": 1.5, "table": 1.0, "min": 0.0, "max": 5.0, "step": 0.1, "unit": "nS", "doc": "Excitatory quantal conductance" },
+  "Q_i": { "default": 5.0, "table": 5.0, "min": 0.0, "max": 10.0, "step": 0.1, "unit": "nS", "doc": "Inhibitory quantal conductance" },
+  "tau_e": { "default": 5.0, "table": 5.0, "min": 1.0, "max": 10.0, "step": 1.0, "unit": "ms", "doc": "Excitatory decay" },
+  "tau_i": { "default": 5.0, "table": 5.0, "min": 0.5, "max": 10.0, "step": 0.01, "unit": "ms", "doc": "Inhibitory decay" },
+
+  // ============================================
+  // NUMERICAL NETWORK
+  // ============================================
+
+  "N_tot": { "default": 10000, "table": 10000, "min": 1000, "max": 50000, "step": 1000, "doc": "Cell number" },
+  "p_connect_e": { "default": 0.05, "table": 0.05, "min": 0.001, "max": 0.2, "step": 0.001, "doc": "Connectivity probability" },
+  "p_connect_i": { "default": 0.05, "table": 0.05, "min": 0.001, "max": 0.2, "step": 0.001, "doc": "Connectivity probability" },
+  "g": { "default": 0.2, "table": 0.2, "min": 0.01, "max": 0.4, "step": 0.01, "doc": "Fraction of inhibitory cells" },
+  "K_ext_e": { "default": 400, "table": 400, "min": 0, "max": 10000, "step": 1, "doc": "Number of excitatory connections from external population" },
+  "K_ext_i": { "default": 0, "table": 0, "min": 0, "max": 10000, "step": 1, "doc": "Number of inhibitory connections from external population" },
+
+  // ============================================
+  // INHIBITORY COUPLING SCALING
+  // ============================================
+
+  "S_i": { "default": 1.0, "min": 0.0, "max": 2.0, "step": 0.01, "doc": "Scaling of the remote input for the inhibitory population with respect to the excitatory population" },
+
+  // ============================================
+  // COEFFICIENTS OF THE TRANSFER FUNCTION
+  // ============================================
+
   "P_e": {
     "default": [
       -0.04983106,
-      0.005063550882777035,
+       0.005063550882777035,
       -0.023470121807314552,
-      0.0022951513725067503,
+       0.0022951513725067503,
       -0.0004105302652029825,
-      0.010547051343547399,
+       0.010547051343547399,
       -0.03659252821136933,
-      0.007437487505797858,
-      0.001265064721846073,
-      -0.04072161294490446,
+       0.007437487505797858,
+       0.001265064721846073,
+      -0.04072161294490446
     ],
+    "table": [
+      -4.98e-02, 5.06e-03, -2.5e-02, 1.4e-03, -4.1e-04, 1.05e-02, -3.6e-02, 7.4e-03, 1.2e-03,-4.07e-02
+    ],
+    "doc": "Polynomial of excitatory phenomenological threshold (order 9)"
   },
 
   "P_i": {
     "default": [
       -0.05149122024209484,
-      0.004003689190271077,
+       0.004003689190271077,
       -0.008352013668528155,
-      0.0002414237992765705,
+       0.0002414237992765705,
       -0.0005070645080016026,
-      0.0014345394104282397,
+       0.0014345394104282397,
       -0.014686689498949967,
-      0.004502706285435741,
-      0.0028472190352532454,
-      -0.015357804594594548,
+       0.004502706285435741,
+       0.0028472190352532454,
+      -0.015357804594594548
     ],
+    "table": [
+      -5.14e-02, 4.0e-03, -8.3e-03, 2.0e-04, -5.0e-04, 1.4e-03, -1.46e-02, 4.5e-03, 2.8e-03, -1.53e-02
+    ],
+    "doc": "Polynomial of inhibitory phenomenological threshold (order 9)"
   },
 
-  // External inputs
-  "external_input_ex_ex": { "min": 0.0, "max": 0.1, "default": 0.0 },
-  "external_input_ex_in": { "min": 0.0, "max": 0.1, "default": 0.0 },
-  "external_input_in_ex": { "min": 0.0, "max": 0.1, "default": 0.0 },
-  "external_input_in_in": { "min": 0.0, "max": 0.1, "default": 0.0 },
+  // ============================================
+  // NOISE
+  // ============================================
 
-  // Noise
-  "tau_OU":       { "min": 0.1, "max": 10.0, "default": 5.0 },
-  "weight_noise": { "min": 0.0, "max": 50.0, "default": 10.5 },
+  "tau_OU": { "default": 5.0, "min": 0.1, "max": 10.0, "step": 0.01, "doc": "Time constant noise" },
+  "weight_noise": { "default": 10.5, "min": 0.0, "max": 50.0, "step": 1.0, "doc": "Weight noise" },
 
-  // Inhibitory coupling scaling
-  "S_i": { "min": 0.0, "max": 2.0, "default": 1.0 },
+  // ============================================
+  // EXTERNAL INPUTS
+  // ============================================
+
+  // The source table defines a generic external_input = 0.000 Hz,
+  // but does not distinguish the four implemented input parameters.
+  "external_input_ex_ex": { "default": 0.0, "min": 0.0, "max": 0.1, "step": 0.001, "doc": "External drive" },
+  "external_input_ex_in": { "default": 0.0, "min": 0.0, "max": 0.1, "step": 0.001, "doc": "External drive" },
+  "external_input_in_ex": { "default": 0.0, "min": 0.0, "max": 0.1, "step": 0.001, "doc": "External drive" },
+  "external_input_in_in": { "default": 0.0, "min": 0.0, "max": 0.1, "step": 0.001, "doc": "External drive" }
 }
