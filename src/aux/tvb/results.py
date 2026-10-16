@@ -37,6 +37,7 @@ class ResultMetadata:
     simulation: SimulationMetadata
     model: ModelMetadata
     stimulus: dict
+    stimulus_seed: int | None = None
 
 
 def save_single_region_simulation(
@@ -71,6 +72,7 @@ def load_single_region_simulation(path):
             simulation=SimulationMetadata(**data["simulation"]),
             model=ModelMetadata(**data["model"]),
             stimulus=data["stimulus"],
+            stimulus_seed=data.get("stimulus_seed"),
         )
         times = np.asarray(saved["time_ms"], dtype=float)
         states = {

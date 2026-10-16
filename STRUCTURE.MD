@@ -75,7 +75,7 @@ tvb_test/
 - `scripts/` is the destination for new executable Python scripts. It currently has no files.
 - `src/aux/` contains reusable helpers imported directly from the checkout. It is not an installable distribution. The `aux.tvb` namespace keeps project helpers separate from the installed `tvb` library.
 - `src/aux/parameters.py` contains parameter reshaping and sampling configuration helpers copied from notebook 02.
-- `src/aux/tvb/stimulus.py` builds pulses, steps, smooth transitions, random variants, and additive noise with fixed or random standard deviation. Contributions are summed, including lists of the same type, using one generator seeded by `build_stimulus`. `plot_results` accepts `stimulus_seed` to reproduce random stimuli.
+- `src/aux/tvb/stimulus.py` builds pulses, steps, smooth transitions, random variants, and additive noise with fixed or random standard deviation. Contributions are summed, including lists of the same type, using one generator seeded by `build_stimulus`. `ResultMetadata.stimulus_seed` is saved in NPZ metadata and used by `plot_results` by default; an explicit `stimulus_seed` overrides it. Files without this field load with `None`.
 - `src/aux/sampling.py` contains Sobol, distribution, and sample-weight helpers copied from notebook 02. Notebook 02 keeps using its local definitions.
 - `results/` contains generated outputs; its contents are ignored by Git.
 

@@ -18,6 +18,8 @@ def plot_results(times, states, metadata, show_stimulus=True, ax=None,
     groups = []
 
     if show_stimulus:
+        if stimulus_seed is None:
+            stimulus_seed = metadata.stimulus_seed
         stimulus_times, stimulus_data = build_stimulus(
             metadata.stimulus,
             metadata.simulation.duration_ms,
