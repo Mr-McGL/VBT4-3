@@ -3,7 +3,8 @@ import numpy as np
 from aux.tvb.stimulus import build_stimulus
 
 
-def plot_results(times, states, metadata, show_stimulus=True, ax=None, plot_states=None):
+def plot_results(times, states, metadata, show_stimulus=True, ax=None,
+                 plot_states=None, stimulus_seed=None):
     times = np.asarray(times)
     if plot_states is None:
         plotted_states = states
@@ -21,6 +22,7 @@ def plot_results(times, states, metadata, show_stimulus=True, ax=None, plot_stat
             metadata.stimulus,
             metadata.simulation.duration_ms,
             metadata.simulation.dt_ms,
+            seed=stimulus_seed,
         )
         units = dict.fromkeys(stimulus_units.get(name, "model units")
                               for name, _ in stimulus_data)

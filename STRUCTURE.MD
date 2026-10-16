@@ -34,6 +34,7 @@ tvb_test/
 │       ├── 01e_simulation_one_region.ipynb
 │       ├── 02_sampling_test.ipynb
 │       ├── 03_parameter_exploration.ipynb
+│       ├── 04_configuration_files.ipynb
 │       └── 99a_simulation_configuration.ipynb
 ├── scripts/                   # Future executable scripts: <topic>/<name>.py
 ├── src/                       # Directly imported helpers; no build metadata
@@ -44,7 +45,7 @@ tvb_test/
 │       ├── sampling.py         # Sobol and distribution sampling helpers
 │       └── tvb/
 │           ├── __init__.py
-│           ├── stimulus.py     # Pulse and pulse-train arrays
+│           ├── stimulus.py     # Composable stimulus arrays and noise
 │           ├── model.py        # Model builder
 │           ├── integrator.py   # Integrator and noise builder
 │           ├── simulator.py    # Dynamic parameters and single-region simulator
@@ -65,14 +66,16 @@ tvb_test/
 - `config/zerlaut/params_raw.json` stores Zerlaut parameter data.
 - `notebooks/zerlaut/01a_simulation_one_region.ipynb` is the original single-region teaching example.
 - `notebooks/zerlaut/01b_simulation_one_region.ipynb` uses the helpers in `src/aux/` for single-region simulations.
-- `notebooks/zerlaut/01c_simulation_one_region.ipynb` compares external stimulation signals.
+- `notebooks/zerlaut/01c_simulation_one_region.ipynb` compares external stimulation signals using the shared builders.
 - `notebooks/zerlaut/01d_simulation_two_regions.ipynb` explores signal tracking and directed coupling.
 - `notebooks/zerlaut/01e_simulation_one_region.ipynb` compares `weight_noise` and `tau_OU` under a constant baseline input.
 - `notebooks/zerlaut/03_parameter_exploration.ipynb` groups Zerlaut defaults, counts parameters, explores ranges, and runs simulation grids for each parameter group. Its additional `ou_drift` analysis belongs only to Noise.
 - `notebooks/zerlaut/02_sampling_test.ipynb` and `99a_simulation_configuration.ipynb` contain additional Zerlaut experiments.
+- `notebooks/zerlaut/04_configuration_files.ipynb` defines model sampling and stimulus configurations. Noise is a separate stimulus contribution.
 - `scripts/` is the destination for new executable Python scripts. It currently has no files.
 - `src/aux/` contains reusable helpers imported directly from the checkout. It is not an installable distribution. The `aux.tvb` namespace keeps project helpers separate from the installed `tvb` library.
 - `src/aux/parameters.py` contains parameter reshaping and sampling configuration helpers copied from notebook 02.
+- `src/aux/tvb/stimulus.py` builds pulses, steps, smooth transitions, random variants, and additive noise with fixed or random standard deviation. Contributions are summed, including lists of the same type, using one generator seeded by `build_stimulus`. `plot_results` accepts `stimulus_seed` to reproduce random stimuli.
 - `src/aux/sampling.py` contains Sobol, distribution, and sample-weight helpers copied from notebook 02. Notebook 02 keeps using its local definitions.
 - `results/` contains generated outputs; its contents are ignored by Git.
 
