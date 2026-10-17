@@ -8,6 +8,7 @@ dependencies:
   - pandas
   - scipy
   - scikit-learn
+  # - joblib #Interesting for parallelization with numpy
   - matplotlib=3.9
   - jupyterlab=4
   - ipykernel=6
