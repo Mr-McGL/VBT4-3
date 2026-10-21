@@ -292,7 +292,7 @@ def run_batches(config, output_dir, *, first_batch=0, n_batches=None, n_workers=
 
     # LOOP
     count, mean_duration_s = 0, 0.0
-    
+    started = perf_counter() 
     with (
             ProcessPoolExecutor(max_workers=n_workers) as pool, 
             completed_log_path.open("a", buffering=1, encoding="utf-8") as clog,
@@ -316,14 +316,9 @@ def run_batches(config, output_dir, *, first_batch=0, n_batches=None, n_workers=
             
             mean_duration_s += (batch["duration_s"] - mean_duration_s) / (count:=count+1)
             pprint(f'Batch {batch["batch_id"]}: {batch["duration_s"]:.2f} s; mean: {mean_duration_s:.2f} s')
-
-    # Mejor alternativa para trabajar con numpy.     
-    # result = Parallel(n_jobs=n_workers)( 
-    #     delayed(run_batch)(config, batch, sobol_seed, batch_seq_seed)
-    #     for batch in range(first_batch, first_batch + (1 if n_batches is None else n_batches))
-    #     if batch not in completed
-    # )
-
+    stopped = perf_counter()
+    pprint(f'All batches completed in {stopped - started:.2f} s')
+    iolog.write(f'\n\nTotal time: {stopped - started:.2f} s\n')
 
 
 if __name__ == "__main__":
@@ -340,3 +335,6 @@ if __name__ == "__main__":
 
     run_batches(config, args.output_dir,
                 first_batch=args.first_batch, n_batches=args.n_batches, n_workers=args.n_workers)
+
+    with (args.output_dir / "io.log").open("a", encoding="utf-8") as iolog:
+        iolog.write(f"Total time: {perf_counter() - started:.2f} s\n")
