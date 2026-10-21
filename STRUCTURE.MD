@@ -35,6 +35,8 @@ tvb_test/
 │       ├── 02_sampling_test.ipynb
 │       ├── 03_parameter_exploration.ipynb
 │       ├── 04_configuration_files.ipynb
+│       ├── 05_plot_simulations.ipynb
+│       ├── 06_interactive_plot_simulations.ipynb
 │       └── 99a_simulation_configuration.ipynb
 ├── scripts/                   # Future executable scripts: <topic>/<name>.py
 ├── src/                       # Directly imported helpers; no build metadata
@@ -72,6 +74,8 @@ tvb_test/
 - `notebooks/zerlaut/03_parameter_exploration.ipynb` groups Zerlaut defaults, counts parameters, explores ranges, and runs simulation grids for each parameter group. Its additional `ou_drift` analysis belongs only to Noise.
 - `notebooks/zerlaut/02_sampling_test.ipynb` and `99a_simulation_configuration.ipynb` contain additional Zerlaut experiments.
 - `notebooks/zerlaut/04_configuration_files.ipynb` defines model sampling and stimulus configurations, and simulates batches from consecutive blocks of a global Sobol sequence. The notebook validates configuration before drawing random numbers and extracts stimulus selection and generation into `build_trial_stimulus`. Each trial has independent stimulus selection and generation streams. Its metadata contains parameters, their sampling densities, the selected stimulus configuration and its probability, and its numeric generation seed; signal arrays remain separate in memory. `simulate_trial` runs TVB and returns the selected state variables in the configured output dtype; `run_batches` distributes batches across a `ProcessPoolExecutor` controlled by `n_workers`, collects completions in the coordinator, and returns batches in batch order. The previous `joblib.Parallel` launcher remains commented out for reference.
+- `notebooks/zerlaut/05_plot_simulations.ipynb` loads saved trials and their JSON configuration, and progressively plots the selected trial IDs in four columns using the plotting section from notebook 04.
+- `notebooks/zerlaut/06_interactive_plot_simulations.ipynb` uses bqplot, ipywidgets, and ipyevents to load or remove up to 16 trials, decimate signals by 8, enlarge previews on hover, and compare parameters with JSON defaults using relative sampling density for color.
 - `scripts/` is the destination for new executable Python scripts. It currently has no files.
 - `src/aux/` contains reusable helpers imported directly from the checkout. It is not an installable distribution. The `aux.tvb` namespace keeps project helpers separate from the installed `tvb` library.
 - `src/aux/parameters.py` contains parameter reshaping and sampling configuration helpers copied from notebook 02.

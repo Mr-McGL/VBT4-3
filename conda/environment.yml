@@ -18,6 +18,12 @@ dependencies:
   #- itables
   #- ipydatagrid
   - ipyaggrid
+
+  #Plots interactivos.
+  - ipywidgets
+  - bqplot
+  - ipyevents
+  
   - rich
   - pip
   - pip:
