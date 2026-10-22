@@ -272,6 +272,15 @@ def run_batch(config, batch_id, sobol_seed, batch_seq_seed, output_dir):
         "error": error,
     }
 
+def format_duration(seconds):
+    """Convierte segundos en días, horas, minutos, segundos y milisegundos."""
+    seconds, milliseconds = divmod(round(seconds * 1000), 1000)
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
+    return f"{days} d {hours} h {minutes} min {seconds} s {milliseconds} ms"
+
+
 def run_batches(config, output_dir, *, first_batch=0, n_batches=None, n_workers=1):
     # Validación de la configuración
     validate_config(config)
@@ -316,9 +325,12 @@ def run_batches(config, output_dir, *, first_batch=0, n_batches=None, n_workers=
             
             mean_duration_s += (batch["duration_s"] - mean_duration_s) / (count:=count+1)
             pprint(f'Batch {batch["batch_id"]}: {batch["duration_s"]:.2f} s; mean: {mean_duration_s:.2f} s')
+    
     stopped = perf_counter()
-    pprint(f'All batches completed in {stopped - started:.2f} s')
-    iolog.write(f'\n\nTotal time: {stopped - started:.2f} s\n')
+    total_time = format_duration(stopped - started)
+    with io_log_path.open("a", encoding="utf-8") as iolog:
+        iolog.write(f'\n\nTotal time: {total_time}\n')
+    pprint(f'All batches completed in {total_time}')
 
 
 if __name__ == "__main__":
@@ -335,6 +347,3 @@ if __name__ == "__main__":
 
     run_batches(config, args.output_dir,
                 first_batch=args.first_batch, n_batches=args.n_batches, n_workers=args.n_workers)
-
-    with (args.output_dir / "io.log").open("a", encoding="utf-8") as iolog:
-        iolog.write(f"Total time: {perf_counter() - started:.2f} s\n")
